@@ -3,7 +3,6 @@ import { Session } from '/@/utils/storage';
 import { validateNull } from '/@/utils/validate';
 import { useUserInfo } from '/@/stores/userInfo';
 import other from '/@/utils/other';
-
 /**
  * https://www.ietf.org/rfc/rfc6749.txt
  * OAuth 协议 4.3.1 要求格式为 form 而不是 JSON 注意！
@@ -26,56 +25,13 @@ export const login = (data: any) => {
 	return request({
 		url: '/auth/oauth2/token',
 		method: 'post',
-		params: { username, randomStr, code, grant_type, scope },
+		// params: { username, randomStr, code, grant_type, scope },
 		data: { password: encPassword },
 		headers: {
 			skipToken: true,
 			Authorization: basicAuth,
 			'Content-Type': FORM_CONTENT_TYPE,
 		},
-	});
-};
-
-export const loginByMobile = (mobile: any, code: any) => {
-	const grant_type = 'mobile';
-	const scope = 'server';
-	const basicAuth = 'Basic ' + window.btoa(import.meta.env.VITE_OAUTH2_MOBILE_CLIENT);
-	Session.set('basicAuth', basicAuth);
-
-	return request({
-		url: '/auth/oauth2/token',
-		headers: {
-			skipToken: true,
-			Authorization: basicAuth,
-			'Content-Type': FORM_CONTENT_TYPE,
-		},
-		method: 'post',
-		params: { mobile: mobile, code: code, grant_type, scope },
-	});
-};
-
-export const loginBySocial = (state: string, code: string) => {
-	const grant_type = 'mobile';
-	const scope = 'server';
-	const basicAuth = 'Basic ' + window.btoa(import.meta.env.VITE_OAUTH2_SOCIAL_CLIENT);
-	Session.set('basicAuth', basicAuth);
-
-	return request({
-		url: '/auth/oauth2/token',
-		headers: {
-			skipToken: true,
-			Authorization: basicAuth,
-			'Content-Type': FORM_CONTENT_TYPE,
-		},
-		method: 'post',
-		params: { mobile: state + '@' + code, code: code, grant_type, scope },
-	});
-};
-
-export const sendMobileCode = (mobile: any) => {
-	return request({
-		url: '/admin/mobile/' + mobile,
-		method: 'get',
 	});
 };
 

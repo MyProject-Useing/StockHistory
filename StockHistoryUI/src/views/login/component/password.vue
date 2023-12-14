@@ -1,6 +1,7 @@
 <template>
-	<el-form size="large" class="login-content-form" ref="loginFormRef" :rules="loginRules" :model="state.ruleForm" @keyup.enter="onSignIn">
-		<el-form-item class="login-animation1" prop="username">
+	<el-form size="large" class="login-box" ref="loginFormRef" :rules="loginRules" :model="state.ruleForm" @keyup.enter="onSignIn">
+		<h2 class="login-title">{{ getThemeConfig.globalTitle }}</h2>
+		<el-form-item class="user-box" prop="username">
 			<el-input text placeholder="请输入用户名" v-model="state.ruleForm.username" clearable autocomplete="off">
 				<template #prefix>
 					<el-icon class="el-input__icon">
@@ -9,7 +10,7 @@
 				</template>
 			</el-input>
 		</el-form-item>
-		<el-form-item class="login-animation2" prop="password">
+		<el-form-item class="user-box" prop="password">
 			<el-input :type="state.isShowPassword ? 'text' : 'password'" placeholder="请输入密码" v-model="state.ruleForm.password" autocomplete="off">
 				<template #prefix>
 					<el-icon class="el-input__icon">
@@ -26,57 +27,18 @@
 				</template>
 			</el-input>
 		</el-form-item>
-		<el-form-item class="login-animation2" prop="code" v-if="verifyEnable">
-			<el-col :span="15">
-				<el-input text maxlength="4" placeholder="请输入验证码" v-model="state.ruleForm.code" clearable autocomplete="off">
-					<template #prefix>
-						<el-icon class="el-input__icon">
-							<ele-Position />
-						</el-icon>
-					</template>
-				</el-input>
-			</el-col>
-			<el-col :span="1"></el-col>
-			<el-col :span="8">
-				<img :src="imgSrc" style="width: 100%; height: 40px" @click="getVerifyCode" />
-			</el-col>
-		</el-form-item>
 		<el-form-item class="login-animation4">
 			<el-button type="primary" class="login-content-submit" :loading="loading" @click="onSignIn">
 				<span>登 录</span>
 			</el-button>
 		</el-form-item>
-		<div class="font12 mt30 login-animation4 login-msg">
-			* 温馨提示：建议使用谷歌、Microsoft Edge，版本 79.0.1072.62 及以上浏览器，360浏览器请使用极速模式
-		</div>
 	</el-form>
-
-	<div class="login-box">
-		<h2>Login</h2>
-		<form>
-			<div class="user-box">
-				<input type="text" name="" required="" />
-				<label>Username</label>
-			</div>
-			<div class="user-box">
-				<input type="password" name="" required="" />
-				<label>Password</label>
-			</div>
-			<a href="#" :loading="loading" @click="onSignIn">
-				<span></span>
-				<span></span>
-				<span></span>
-				<span></span>
-				Submit
-			</a>
-		</form>
-	</div>
 </template>
 
 <script setup lang="ts" name="password">
 import { reactive, ref, defineEmits } from 'vue';
 import { useUserInfo } from '/@/stores/userInfo';
-import { generateUUID } from '/@/utils/other';
+import { useThemeConfig } from '/@/stores/themeConfig';
 
 // 定义变量内容
 const emit = defineEmits(['signInSuccess']); // 声明事件名称
@@ -96,18 +58,16 @@ const state = reactive({
 const loginRules = reactive({
 	username: [{ required: true, trigger: 'blur', message: '请输入用户名' }], // 用户名校验规则
 	password: [{ required: true, trigger: 'blur', message: '请输入密码' }], // 密码校验规则
-	code: [{ required: true, trigger: 'blur', message: '请输入验证码' }], // 验证码校验规则
 });
 
-// 是否开启验证码
-const verifyEnable = ref(import.meta.env.VITE_VERIFY_ENABLE === 'true');
-const imgSrc = ref('');
+// 定义变量内容
+const storesThemeConfig = useThemeConfig();
+const { themeConfig } = storeToRefs(storesThemeConfig);
 
-//获取验证码图片
-const getVerifyCode = () => {
-	state.ruleForm.randomStr = generateUUID();
-	imgSrc.value = `${import.meta.env.VITE_API_URL}/code?randomStr=${state.ruleForm.randomStr}`;
-};
+// 获取布局配置信息
+const getThemeConfig = computed(() => {
+	return themeConfig.value;
+});
 
 // 账号密码登录
 const onSignIn = async () => {
@@ -119,27 +79,12 @@ const onSignIn = async () => {
 		await useUserInfo().login(state.ruleForm); // 调用登录方法
 		emit('signInSuccess'); // 触发事件
 	} finally {
-		verifyEnable.value && getVerifyCode();
 		loading.value = false; // 登录结束
 	}
 };
-
-onMounted(() => {
-	verifyEnable.value && getVerifyCode();
-});
 </script>
 
-<style lang="scss">
-html {
-	height: 100%;
-}
-body {
-	margin: 0;
-	padding: 0;
-	font-family: sans-serif;
-	background: linear-gradient(#141e30, #243b55);
-}
-
+<style lang="scss" scoped>
 .login-box {
 	position: absolute;
 	top: 50%;
@@ -151,47 +96,46 @@ body {
 	box-sizing: border-box;
 	box-shadow: 0 15px 25px rgba(0, 0, 0, 0.6);
 	border-radius: 10px;
-}
 
-.login-box h2 {
-	margin: 0 0 30px;
-	padding: 0;
-	color: #fff;
-	text-align: center;
-}
+	.login-title {
+		margin: 0 0 30px;
+		padding: 0;
+		color: #fff;
+		text-align: center;
+		font-size: 18px;
+	}
+	.user-box {
+		position: relative;
+		input {
+			width: 100%;
+			padding: 10px 0;
+			font-size: 16px;
+			color: #fff;
+			margin-bottom: 30px;
+			border: none;
+			border-bottom: 1px solid #fff;
+			outline: none;
+			background: transparent;
 
-.login-box .user-box {
-	position: relative;
-}
-
-.login-box .user-box input {
-	width: 100%;
-	padding: 10px 0;
-	font-size: 16px;
-	color: #fff;
-	margin-bottom: 30px;
-	border: none;
-	border-bottom: 1px solid #fff;
-	outline: none;
-	background: transparent;
-}
-.login-box .user-box label {
-	position: absolute;
-	top: 0;
-	left: 0;
-	padding: 10px 0;
-	font-size: 16px;
-	color: #fff;
-	pointer-events: none;
-	transition: 0.5s;
-}
-
-.login-box .user-box input:focus ~ label,
-.login-box .user-box input:valid ~ label {
-	top: -20px;
-	left: 0;
-	color: #03e9f4;
-	font-size: 12px;
+			&:focus ~ label,
+			&:valid ~ label {
+				top: -20px;
+				left: 0;
+				color: #03e9f4;
+				font-size: 12px;
+			}
+		}
+		label {
+			position: absolute;
+			top: 0;
+			left: 0;
+			padding: 10px 0;
+			font-size: 16px;
+			color: #fff;
+			pointer-events: none;
+			transition: 0.5s;
+		}
+	}
 }
 
 .login-box form a {

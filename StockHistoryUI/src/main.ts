@@ -7,7 +7,7 @@ import { i18n } from '/@/i18n';
 import other from '/@/utils/other';
 
 // 引入mock
-// import '/@/mock/index';
+import '/@/mock/index';
 
 import ElementPlus from 'element-plus';
 import '/@/theme/tailwind.css';

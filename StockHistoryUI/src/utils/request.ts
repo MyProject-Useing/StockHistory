@@ -9,11 +9,11 @@ import other from './other';
  */
 const service: AxiosInstance = axios.create({
 	baseURL: import.meta.env.VITE_API_URL,
-	// headers: {
-	//   Accept: "application/json, text/plain, */*",
-	//   "Content-Type": "application/x-www-form-urlencoded",
-	//   "X-Requested-With": "XMLHttpRequest"
-	// },
+	headers: {
+		Accept: "application/json, text/plain, */*",
+		"Content-Type": "application/x-www-form-urlencoded",
+		"X-Requested-With": "XMLHttpRequest"
+	},
 	// 跨域请求，允许保存cookie
 	// withCredentials: true,
 	timeout: 50000, // 全局超时时间
@@ -47,7 +47,6 @@ service.interceptors.request.use(
 		}
 		// 自动适配单体和微服务架构不同的URL
 		config.url = other.adaptationUrl(config.url);
-
 		// 处理完毕，返回config对象
 		return config;
 	},
