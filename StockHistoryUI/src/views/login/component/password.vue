@@ -1,0 +1,301 @@
+<template>
+	<el-form size="large" class="login-content-form" ref="loginFormRef" :rules="loginRules" :model="state.ruleForm" @keyup.enter="onSignIn">
+		<el-form-item class="login-animation1" prop="username">
+			<el-input text placeholder="请输入用户名" v-model="state.ruleForm.username" clearable autocomplete="off">
+				<template #prefix>
+					<el-icon class="el-input__icon">
+						<ele-User />
+					</el-icon>
+				</template>
+			</el-input>
+		</el-form-item>
+		<el-form-item class="login-animation2" prop="password">
+			<el-input :type="state.isShowPassword ? 'text' : 'password'" placeholder="请输入密码" v-model="state.ruleForm.password" autocomplete="off">
+				<template #prefix>
+					<el-icon class="el-input__icon">
+						<ele-Unlock />
+					</el-icon>
+				</template>
+				<template #suffix>
+					<i
+						class="iconfont el-input__icon login-content-password"
+						:class="state.isShowPassword ? 'icon-yincangmima' : 'icon-xianshimima'"
+						@click="state.isShowPassword = !state.isShowPassword"
+					>
+					</i>
+				</template>
+			</el-input>
+		</el-form-item>
+		<el-form-item class="login-animation2" prop="code" v-if="verifyEnable">
+			<el-col :span="15">
+				<el-input text maxlength="4" placeholder="请输入验证码" v-model="state.ruleForm.code" clearable autocomplete="off">
+					<template #prefix>
+						<el-icon class="el-input__icon">
+							<ele-Position />
+						</el-icon>
+					</template>
+				</el-input>
+			</el-col>
+			<el-col :span="1"></el-col>
+			<el-col :span="8">
+				<img :src="imgSrc" style="width: 100%; height: 40px" @click="getVerifyCode" />
+			</el-col>
+		</el-form-item>
+		<el-form-item class="login-animation4">
+			<el-button type="primary" class="login-content-submit" :loading="loading" @click="onSignIn">
+				<span>登 录</span>
+			</el-button>
+		</el-form-item>
+		<div class="font12 mt30 login-animation4 login-msg">
+			* 温馨提示：建议使用谷歌、Microsoft Edge，版本 79.0.1072.62 及以上浏览器，360浏览器请使用极速模式
+		</div>
+	</el-form>
+
+	<div class="login-box">
+		<h2>Login</h2>
+		<form>
+			<div class="user-box">
+				<input type="text" name="" required="" />
+				<label>Username</label>
+			</div>
+			<div class="user-box">
+				<input type="password" name="" required="" />
+				<label>Password</label>
+			</div>
+			<a href="#" :loading="loading" @click="onSignIn">
+				<span></span>
+				<span></span>
+				<span></span>
+				<span></span>
+				Submit
+			</a>
+		</form>
+	</div>
+</template>
+
+<script setup lang="ts" name="password">
+import { reactive, ref, defineEmits } from 'vue';
+import { useUserInfo } from '/@/stores/userInfo';
+import { generateUUID } from '/@/utils/other';
+
+// 定义变量内容
+const emit = defineEmits(['signInSuccess']); // 声明事件名称
+const loginFormRef = ref(); // 定义LoginForm表单引用
+const loading = ref(false); // 定义是否正在登录中
+const state = reactive({
+	isShowPassword: false, // 是否显示密码
+	ruleForm: {
+		// 表单数据
+		username: 'admin', // 用户名
+		password: '123456', // 密码
+		code: '', // 验证码
+		randomStr: '', // 验证码随机数
+	},
+});
+
+const loginRules = reactive({
+	username: [{ required: true, trigger: 'blur', message: '请输入用户名' }], // 用户名校验规则
+	password: [{ required: true, trigger: 'blur', message: '请输入密码' }], // 密码校验规则
+	code: [{ required: true, trigger: 'blur', message: '请输入验证码' }], // 验证码校验规则
+});
+
+// 是否开启验证码
+const verifyEnable = ref(import.meta.env.VITE_VERIFY_ENABLE === 'true');
+const imgSrc = ref('');
+
+//获取验证码图片
+const getVerifyCode = () => {
+	state.ruleForm.randomStr = generateUUID();
+	imgSrc.value = `${import.meta.env.VITE_API_URL}/code?randomStr=${state.ruleForm.randomStr}`;
+};
+
+// 账号密码登录
+const onSignIn = async () => {
+	const valid = await loginFormRef.value.validate().catch(() => {}); // 表单校验
+	if (!valid) return false;
+
+	loading.value = true; // 正在登录中
+	try {
+		await useUserInfo().login(state.ruleForm); // 调用登录方法
+		emit('signInSuccess'); // 触发事件
+	} finally {
+		verifyEnable.value && getVerifyCode();
+		loading.value = false; // 登录结束
+	}
+};
+
+onMounted(() => {
+	verifyEnable.value && getVerifyCode();
+});
+</script>
+
+<style lang="scss">
+html {
+	height: 100%;
+}
+body {
+	margin: 0;
+	padding: 0;
+	font-family: sans-serif;
+	background: linear-gradient(#141e30, #243b55);
+}
+
+.login-box {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	width: 400px;
+	padding: 40px;
+	transform: translate(-50%, -50%);
+	background: rgba(0, 0, 0, 0.5);
+	box-sizing: border-box;
+	box-shadow: 0 15px 25px rgba(0, 0, 0, 0.6);
+	border-radius: 10px;
+}
+
+.login-box h2 {
+	margin: 0 0 30px;
+	padding: 0;
+	color: #fff;
+	text-align: center;
+}
+
+.login-box .user-box {
+	position: relative;
+}
+
+.login-box .user-box input {
+	width: 100%;
+	padding: 10px 0;
+	font-size: 16px;
+	color: #fff;
+	margin-bottom: 30px;
+	border: none;
+	border-bottom: 1px solid #fff;
+	outline: none;
+	background: transparent;
+}
+.login-box .user-box label {
+	position: absolute;
+	top: 0;
+	left: 0;
+	padding: 10px 0;
+	font-size: 16px;
+	color: #fff;
+	pointer-events: none;
+	transition: 0.5s;
+}
+
+.login-box .user-box input:focus ~ label,
+.login-box .user-box input:valid ~ label {
+	top: -20px;
+	left: 0;
+	color: #03e9f4;
+	font-size: 12px;
+}
+
+.login-box form a {
+	position: relative;
+	display: inline-block;
+	padding: 10px 20px;
+	color: #03e9f4;
+	font-size: 16px;
+	text-decoration: none;
+	text-transform: uppercase;
+	overflow: hidden;
+	transition: 0.5s;
+	margin-top: 40px;
+	letter-spacing: 4px;
+}
+
+.login-box a:hover {
+	background: #03e9f4;
+	color: #fff;
+	border-radius: 5px;
+	box-shadow: 0 0 5px #03e9f4, 0 0 25px #03e9f4, 0 0 50px #03e9f4, 0 0 100px #03e9f4;
+}
+
+.login-box a span {
+	position: absolute;
+	display: block;
+}
+
+.login-box a span:nth-child(1) {
+	top: 0;
+	left: -100%;
+	width: 100%;
+	height: 2px;
+	background: linear-gradient(90deg, transparent, #03e9f4);
+	animation: btn-anim1 1s linear infinite;
+}
+
+@keyframes btn-anim1 {
+	0% {
+		left: -100%;
+	}
+	50%,
+	100% {
+		left: 100%;
+	}
+}
+
+.login-box a span:nth-child(2) {
+	top: -100%;
+	right: 0;
+	width: 2px;
+	height: 100%;
+	background: linear-gradient(180deg, transparent, #03e9f4);
+	animation: btn-anim2 1s linear infinite;
+	animation-delay: 0.25s;
+}
+
+@keyframes btn-anim2 {
+	0% {
+		top: -100%;
+	}
+	50%,
+	100% {
+		top: 100%;
+	}
+}
+
+.login-box a span:nth-child(3) {
+	bottom: 0;
+	right: -100%;
+	width: 100%;
+	height: 2px;
+	background: linear-gradient(270deg, transparent, #03e9f4);
+	animation: btn-anim3 1s linear infinite;
+	animation-delay: 0.5s;
+}
+
+@keyframes btn-anim3 {
+	0% {
+		right: -100%;
+	}
+	50%,
+	100% {
+		right: 100%;
+	}
+}
+
+.login-box a span:nth-child(4) {
+	bottom: -100%;
+	left: 0;
+	width: 2px;
+	height: 100%;
+	background: linear-gradient(360deg, transparent, #03e9f4);
+	animation: btn-anim4 1s linear infinite;
+	animation-delay: 0.75s;
+}
+
+@keyframes btn-anim4 {
+	0% {
+		bottom: -100%;
+	}
+	50%,
+	100% {
+		bottom: 100%;
+	}
+}
+</style>
