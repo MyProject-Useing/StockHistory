@@ -6,15 +6,12 @@ import { directive } from '/@/directive';
 import { i18n } from '/@/i18n';
 import other from '/@/utils/other';
 
-// 引入mock
-import '/@/mock/index';
-
 import ElementPlus from 'element-plus';
 import '/@/theme/tailwind.css';
 import 'element-plus/dist/index.css';
 import '/@/theme/index.scss';
 
-import { ElementIcons, Pagination, RightToolbar, DictTag, UploadExcel, UploadFile, UploadImg, Editor, Tip, DelWrap } from '/@/components/index';
+import { ElementIcons, Pagination, RightToolbar, DictTag, UploadExcel, UploadFile, UploadImg, Tip, DelWrap } from '/@/components/index';
 import { parseTime, parseDate, dateTimeStr, dateStr, timeStr } from '/@/utils/formatTime';
 
 // 布局工具
@@ -30,7 +27,6 @@ app.component('RightToolbar', RightToolbar);
 app.component('uploadExcel', UploadExcel);
 app.component('UploadFile', UploadFile);
 app.component('UploadImg', UploadImg);
-app.component('Editor', Editor);
 app.component('Tip', Tip);
 app.component('DelWrap', DelWrap);
 // 导入布局插件

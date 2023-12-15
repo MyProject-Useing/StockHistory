@@ -22,8 +22,8 @@ const list = ref<SelectOptionType[]>([]);
 const getChartData = async (symbol = '000001.sz') => {
 	getHistoryByCode({
 		symbol,
-		start_date: '20190101',
-		end_date: '20200213',
+		start_date: '2019-01-01',
+		end_date: '2020-02-13',
 	})
 		.then((res: any) => {
 			createKLineChart(res.history);

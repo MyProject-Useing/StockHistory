@@ -10,6 +10,7 @@ Stock History API 是一个使用 Python Flask 和 tushare 库编写的简单接
 ```bash
 pip install Flask
 pip install tushare
+pip install flask_cors
 ```
 ````
 
