@@ -1,15 +1,16 @@
 <template>
-	<div class="layout-logo" v-if="setShowLogo" @click="onThemeConfigChange">
+	<!-- <div class="layout-logo" v-if="setShowLogo" @click="onThemeConfigChange">
 		<span>{{ themeConfig.globalTitle }}</span>
-	</div>
-	<div class="layout-logo-size" v-else @click="onThemeConfigChange">
-		<img :src="logoMini" class="layout-logo-size-img" />
+	</div> -->
+	<div class="layout-logo-size">
+		<img :src="logo" class="layout-logo-size-img" />
+		<span class="logo-label">{{ themeConfig.globalTitle }}</span>
 	</div>
 </template>
 
 <script setup lang="ts" name="layoutLogo">
 import { useThemeConfig } from '/@/stores/themeConfig';
-import logoMini from '/@/assets/logo-mini.svg';
+import logo from '/@/assets/logo.jpg';
 
 // 定义变量内容
 const storesThemeConfig = useThemeConfig();
@@ -21,10 +22,10 @@ const setShowLogo = computed(() => {
 	return !isCollapse || layout === 'classic' || document.body.clientWidth < 1000;
 });
 // logo 点击实现菜单展开/收起
-const onThemeConfigChange = () => {
-	if (themeConfig.value.layout === 'transverse') return false;
-	themeConfig.value.isCollapse = !themeConfig.value.isCollapse;
-};
+// const onThemeConfigChange = () => {
+// 	if (themeConfig.value.layout === 'transverse') return false;
+// 	themeConfig.value.isCollapse = !themeConfig.value.isCollapse;
+// };
 </script>
 
 <style scoped lang="scss">
@@ -57,10 +58,23 @@ const onThemeConfigChange = () => {
 	height: 50px;
 	display: flex;
 	cursor: pointer;
+	align-items: center;
 	animation: logoAnimation 0.3s ease-in-out;
 	&-img {
-		width: 20px;
-		margin: auto;
+		width: 40px;
+		margin-left: 17px;
+	}
+
+	.logo-label {
+		font-size: 16px;
+		margin-left: 5px;
+		text-align: center;
+		margin-bottom: 0;
+		margin-top: 0;
+		line-height: 1;
+		text-decoration: none;
+		color: var(--el-color-warning);
+		font-weight: 700;
 	}
 	&:hover {
 		img {

@@ -1,10 +1,5 @@
 <template>
 	<div class="layout-navbars-breadcrumb-user pr15" :style="{ flex: layoutUserFlexNum }">
-		<div class="layout-navbars-breadcrumb-user-icon" @click="onSearchClick">
-			<el-icon :title="$t('user.title2')">
-				<ele-Search />
-			</el-icon>
-		</div>
 		<div class="layout-navbars-breadcrumb-user-icon" @click="onLayoutSetingClick">
 			<i class="icon-skin iconfont" :title="$t('user.title3')"></i>
 		</div>
@@ -39,13 +34,10 @@
 			</span>
 			<template #dropdown>
 				<el-dropdown-menu>
-					<el-dropdown-item command="/home">{{ $t('user.dropdown1') }}</el-dropdown-item>
-					<el-dropdown-item command="personal">{{ $t('user.dropdown2') }}</el-dropdown-item>
-					<el-dropdown-item divided command="logOut">{{ $t('user.dropdown5') }}</el-dropdown-item>
+					<el-dropdown-item command="logOut">{{ $t('user.dropdown5') }}</el-dropdown-item>
 				</el-dropdown-menu>
 			</template>
 		</el-dropdown>
-		<Search ref="searchRef" />
 		<personal-drawer ref="personalDrawerRef"></personal-drawer>
 	</div>
 </template>
