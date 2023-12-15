@@ -26,7 +26,7 @@
 		</div>
 		<el-dropdown :show-timeout="70" :hide-timeout="50" @command="onHandleCommandClick">
 			<span class="layout-navbars-breadcrumb-user-link">
-				<img :src="baseURL + userInfos.user.avatar" class="layout-navbars-breadcrumb-user-link-photo mr5" />
+				<img :src="avatarImage" class="layout-navbars-breadcrumb-user-link-photo mr5" />
 				{{ userInfos.user.username }}
 				<el-icon class="el-icon--right">
 					<ele-ArrowDown />
@@ -51,12 +51,11 @@ import { useUserInfo } from '/@/stores/userInfo';
 import { useThemeConfig } from '/@/stores/themeConfig';
 import mittBus from '/@/utils/mitt';
 import { Session, Local } from '/@/utils/storage';
-import { formatAxis } from '/@/utils/formatTime';
 import { useMsg } from '/@/stores/msg';
+import avatarImage from '/@/assets/userAvatar.jpg';
 
 // 引入组件
 const UserNews = defineAsyncComponent(() => import('/@/layout/navBars/breadcrumb/userNews.vue'));
-const Search = defineAsyncComponent(() => import('/@/layout/navBars/breadcrumb/search.vue'));
 const PersonalDrawer = defineAsyncComponent(() => import('/@/views/admin/user/personal.vue'));
 
 // 定义变量内容
@@ -66,7 +65,6 @@ const stores = useUserInfo();
 const storesThemeConfig = useThemeConfig();
 const { userInfos } = storeToRefs(stores);
 const { themeConfig } = storeToRefs(storesThemeConfig);
-const searchRef = ref();
 const newsRef = ref();
 const personalDrawerRef = ref();
 
@@ -136,7 +134,6 @@ const onHandleCommandClick = (path: string) => {
 			},
 		})
 			.then(async () => {
-				await logout();
 				// 清除缓存/token等
 				Session.clear();
 				// 使用 reload 时，不需要调用 resetRoute() 重置路由
@@ -150,26 +147,10 @@ const onHandleCommandClick = (path: string) => {
 		router.push(path);
 	}
 };
-// 菜单搜索点击
-const onSearchClick = () => {
-	searchRef.value.openSearch();
-};
-
-// 锁屏
-const onLockClick = () => {
-	themeConfig.value.isLockScreen = true;
-	themeConfig.value.lockScreenTime = 0;
-	Local.set('themeConfig', themeConfig.value);
-};
 
 // 初始化组件大小/i18n
 const initI18nOrSize = (value: string, attr: string) => {
 	state[attr] = Local.get('themeConfig')[value];
-};
-
-// 获取到消息
-const rollback = (msg: string) => {
-	useMsg().setMsg({ label: 'websocket消息', value: msg, time: formatAxis(new Date()) });
 };
 
 const isDot = computed(() => {
