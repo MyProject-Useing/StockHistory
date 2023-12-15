@@ -3,7 +3,10 @@
 		<el-select v-model="selectedStock" placeholder="请选择股票" size="large" @change="selectChange">
 			<el-option v-for="item in list" :key="item.value" :label="item.label" :value="item.value" />
 		</el-select>
-		<div id="kline-chart" style="height: 100vh"></div>
+
+		<div class="chart-container">
+			<div id="kline-chart" style="height: 100vh"></div>
+		</div>
 	</div>
 </template>
 
@@ -37,16 +40,6 @@ const createKLineChart = (data: any[]) => {
 		useDirtyRect: false,
 	});
 	myChart.setOption(getOptions(data), true);
-	myChart.dispatchAction({
-		type: 'brush',
-		areas: [
-			{
-				brushType: 'lineX',
-				coordRange: ['2019-09-19', '2020-02-10'],
-				xAxisIndex: 0,
-			},
-		],
-	});
 };
 
 const selectChange = (val: any) => {
