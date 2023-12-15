@@ -88,6 +88,9 @@ export const getOptions = (rawData: any[]) => {
       left: 'center',
       data: ['日K', '5日线', '10日线', '20日线', '30日线']
     },
+    toolbox: {
+      show: false, // 将这里设置为 false
+    },
     tooltip: {
       trigger: 'axis',
       axisPointer: {
@@ -130,16 +133,6 @@ export const getOptions = (rawData: any[]) => {
       ],
       label: {
         backgroundColor: '#777'
-      }
-    },
-    toolbox: {
-      feature: {
-        dataZoom: {
-          yAxisIndex: false
-        },
-        brush: {
-          type: ['lineX', 'clear']
-        }
       }
     },
     brush: {
@@ -186,9 +179,13 @@ export const getOptions = (rawData: any[]) => {
         splitLine: { show: false },
         min: 'dataMin',
         max: 'dataMax',
+        axisLabel: {
+          show: false, // 将这里设置为 false
+        },
         axisPointer: {
-          z: 100
-        }
+          z: 100,
+          link: { xAxisIndex: 'all' }, // 添加 link 配置
+        },
       },
       {
         type: 'category',
@@ -304,16 +301,6 @@ export const getOptions = (rawData: any[]) => {
         xAxisIndex: 1,
         yAxisIndex: 1,
         data: data.volumes,
-        // label: {
-        //   show: true,
-        //   position: 'top',
-        //   formatter: function (params) {
-        //     // Customize label content here
-        //     const dataIndex = params.dataIndex;
-        //     const currentData = rawData[dataIndex];
-        //     return currentData.vol.toFixed(2);
-        //   },
-        // },
       }
     ]
   }
