@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 
 const upColor = '#00da3c';
 const downColor = '#ec0000';
@@ -39,23 +40,12 @@ const splitData = (rawData: StockData[]): ChartData => {
     volumes.push([i, Math.abs(rawData[i].vol), rawData[i].open > rawData[i].close ? 1 : -1]);
   }
 
-  // 日期数据应该从左往右依次递增
-  categoryData.reverse();
-
   return {
     categoryData,
     values,
     volumes,
   };
 };
-
-// 格式化日期
-function formatTushareDate(tushareDate: string): string {
-  const year = tushareDate.substr(0, 4);
-  const month = tushareDate.substr(4, 2);
-  const day = tushareDate.substr(6, 2);
-  return `${year}-${month}-${day}`;
-}
 
 const calculateMA = (dayCount: number, data: ChartData): number[] => {
   const result: any[] = [];
@@ -73,15 +63,37 @@ const calculateMA = (dayCount: number, data: ChartData): number[] => {
   return result;
 };
 
+
+const getStartNumber = (dataLength: number = 1000) => {
+  if (dataLength > 5000) {
+    return 98;
+  }
+
+  if (dataLength > 4000) {
+    return 96;
+  }
+
+  if (dataLength > 3000) {
+    return 90;
+  }
+
+  if (dataLength > 2000) {
+    return 74;
+  }
+
+  return 60;
+}
+
 export const getOptions = (rawData: any[]) => {
   const formatRow = rawData.map(item => {
     return {
       ...item,
-      trade_date: formatTushareDate(item.trade_date),
+      trade_date: dayjs(item.trade_date).format("YYYY-MM-DD"),
     }
   })
   const data = splitData(formatRow);
   const option = {
+    backgroundColor: 'transparent', // 将背景色设置为透明
     animation: false,
     legend: {
       top: 10,
@@ -97,11 +109,12 @@ export const getOptions = (rawData: any[]) => {
         type: 'cross',
       },
       borderWidth: 1,
-      borderColor: '#ccc',
+      borderColor: '#909399', // 修改边框颜色
       padding: 10,
       textStyle: {
-        color: '#000',
+        color: '#fff', // 修改文本颜色
       },
+      backgroundColor: 'rgba(50, 50, 50, 0.6)', // 修改背景颜色
       position: function (pos, params, el, elRect, size) {
         const obj = {
           top: 10,
@@ -109,18 +122,17 @@ export const getOptions = (rawData: any[]) => {
         obj[['left', 'right'][+(pos[0] < size.viewSize[0] / 2)]] = 30;
         return obj;
       },
-      formatter: function (params) {
-        // Customize tooltip content here
+      formatter: function (params: any) {
         const dataIndex = params[0].dataIndex;
-        const currentData = rawData[dataIndex];
+        const currentData = formatRow[dataIndex];
 
         const tooltipContent = `
-          日期: ${currentData.trade_date}<br/>
-          开盘价: ${currentData.open}<br/>
-          收盘价: ${currentData.close}<br/>
-          最低价: ${currentData.low}<br/>
-          最高价: ${currentData.high}<br/>
-          成交量: ${currentData.vol}<br/>
+          <div style="font-size: 14px;">${currentData.trade_date}</div>
+          <div style="margin-top: 8px;">开盘价: ${currentData.open}</div>
+          <div>收盘价: ${currentData.close}</div>
+          <div>最低价: ${currentData.low}</div>
+          <div>最高价: ${currentData.high}</div>
+          <div style="margin-top: 8px;">成交量: ${currentData.vol}</div>
         `;
         return tooltipContent;
       },
@@ -132,9 +144,11 @@ export const getOptions = (rawData: any[]) => {
         }
       ],
       label: {
-        backgroundColor: '#777'
+        backgroundColor: '#909399'
       }
     },
+    // 在 axisPointer 的配置中设置 label 的 backgroundColor，仅影响y轴
+
     brush: {
       xAxisIndex: 'all',
       brushLink: 'all',
@@ -180,7 +194,7 @@ export const getOptions = (rawData: any[]) => {
         min: 'dataMin',
         max: 'dataMax',
         axisLabel: {
-          show: false, // 将这里设置为 false
+          interval: 'auto', // 设置 interval 为 'auto'
         },
         axisPointer: {
           z: 100,
@@ -208,6 +222,11 @@ export const getOptions = (rawData: any[]) => {
         },
         // 调整位置为右侧
         position: 'right',
+        axisPointer: {
+          label: {
+            backgroundColor: '#f56c6c'
+          },
+        },
         axisLabel: {
           // 使用formatter强制显示小数
           formatter: function (value: any) {
@@ -229,7 +248,7 @@ export const getOptions = (rawData: any[]) => {
       {
         type: 'inside',
         xAxisIndex: [0, 1],
-        start: 60,
+        start: getStartNumber(data.values.length),
         end: 100,
       },
     ],
@@ -244,7 +263,7 @@ export const getOptions = (rawData: any[]) => {
           color: upColor,
           color0: downColor,
           borderColor: undefined,
-          borderColor0: undefined
+          borderColor0: undefined,
         }
       },
       {

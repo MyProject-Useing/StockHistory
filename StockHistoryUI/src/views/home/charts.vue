@@ -1,34 +1,40 @@
 <template>
-	<div>
+	<div class="container">
 		<el-select v-model="selectedStock" placeholder="请选择股票" size="large" @change="selectChange">
 			<el-option v-for="item in list" :key="item.value" :label="item.label" :value="item.value" />
 		</el-select>
 
 		<div class="chart-container">
-			<div id="kline-chart" style="height: 100vh"></div>
+			<div id="kline-chart"></div>
 		</div>
 	</div>
 </template>
 
 <script setup lang="ts">
 import * as echarts from 'echarts';
+import dayjs from 'dayjs';
 import { getHistoryByCode, fetchList } from '/@/api/admin/history';
 import { getOptions } from './hooks';
+import { ElLoading } from 'element-plus';
 
 // 定义基础属性
 const selectedStock = ref<string>();
 const list = ref<SelectOptionType[]>([]);
-
 const getChartData = async (symbol = '000001.sz') => {
+	const loadingInstance1 = ElLoading.service({ fullscreen: true });
+
 	getHistoryByCode({
 		symbol,
-		start_date: '2019-01-01',
-		end_date: '2020-02-13',
+		start_date: '2003-11-11', //'1986-00-00',
+		end_date: dayjs(new Date()).format('YYYY-MM-DD'),
 	})
 		.then((res: any) => {
-			createKLineChart(res.history);
+			const data = (res.history || []).reverse();
+			loadingInstance1.close();
+			createKLineChart(data);
 		})
 		.catch(() => {
+			loadingInstance1.close();
 			createKLineChart([]);
 		});
 };
@@ -47,7 +53,6 @@ const selectChange = (val: any) => {
 };
 
 onMounted(() => {
-	// getChartData();
 	fetchList().then((res) => {
 		list.value = (res || []).map((item: any) => {
 			return {
@@ -61,8 +66,18 @@ onMounted(() => {
 });
 </script>
 
-<style>
+<style scoped lang="scss">
+.container {
+	height: 100%;
+	width: 100%;
+	.chart-container {
+		height: 100%;
+		width: 100%;
+	}
+}
+
 #kline-chart {
+	height: 100vh;
 	width: 100%;
 }
 </style>
