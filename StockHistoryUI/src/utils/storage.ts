@@ -62,7 +62,6 @@ export const Session = {
 	clear() {
 		Cookies.remove('token');
 		Cookies.remove('refresh_token');
-		Cookies.remove('tenantId');
 		window.sessionStorage.clear();
 	},
 	// 获取当前存储的 token

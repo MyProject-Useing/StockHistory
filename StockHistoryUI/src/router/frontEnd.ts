@@ -7,6 +7,9 @@ import { useUserInfo } from '/@/stores/userInfo';
 import { useTagsViewRoutes } from '/@/stores/tagsViewRoutes';
 import { useRoutesList } from '/@/stores/routesList';
 import { NextLoading } from '/@/utils/loading';
+import { dynamicRoutes } from './route';
+
+
 
 // 前端控制路由
 
@@ -26,6 +29,8 @@ export async function initFrontEndControlRoutes() {
 	await useUserInfo(pinia).setUserInfos();
 	// 无登录权限时，添加判断
 	if (useUserInfo().userInfos.roles.length <= 0) return Promise.resolve(true);
+	// 处理路由（component），替换 baseRoutes（/@/router/route）第一个顶级 children 的路由
+	baseRoutes[0].children = [...dynamicRoutes, ...notFoundAndNoPower];
 	// 添加动态路由
 	await setAddRoute();
 	// 设置递归过滤有权限的路由到 pinia routesList 中（已处理成多级嵌套路由）及缓存多级嵌套数组处理后的一维数组
@@ -45,19 +50,6 @@ export async function setAddRoute() {
 }
 
 /**
- * 删除/重置路由
- * @method router.removeRoute
- * @description 此处循环为 baseRoutes（/@/router/route）第一个顶级 children 的路由一维数组，非多级嵌套
- * @link 参考：https://next.router.vuejs.org/zh/api/#push
- */
-export async function frontEndsResetRoute() {
-	await setFilterRouteEnd().forEach((route: RouteRecordRaw) => {
-		const routeName: any = route.name;
-		router.hasRoute(routeName) && router.removeRoute(routeName);
-	});
-}
-
-/**
  * 获取有当前用户权限标识的路由数组，进行对原路由的替换
  * @description 替换 baseRoutes（/@/router/route）第一个顶级 children 的路由
  * @returns 返回替换后的路由数组
@@ -66,7 +58,7 @@ export function setFilterRouteEnd() {
 	let filterRouteEnd: any = formatTwoStageRoutes(formatFlatteningRoutes(baseRoutes));
 	// notFoundAndNoPower 防止 404、401 不在 layout 布局中，不设置的话，404、401 界面将全屏显示
 	// 关联问题 No match found for location with path 'xxx'
-	filterRouteEnd[0].children = [...setFilterRoute(filterRouteEnd[0].children), ...notFoundAndNoPower];
+	filterRouteEnd[0].children = [...setFilterRoute(filterRouteEnd[0].children), ...notFoundAndNoPower, ...dynamicRoutes];
 	return filterRouteEnd;
 }
 

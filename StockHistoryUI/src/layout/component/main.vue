@@ -10,7 +10,6 @@
 			<LayoutFooter v-if="isFooter" />
 		</el-scrollbar>
 		<el-backtop :target="setBacktopClass" />
-		<check-token />
 	</el-main>
 </template>
 
@@ -22,7 +21,6 @@ import { NextLoading } from '/@/utils/loading';
 // 引入组件
 const LayoutParentView = defineAsyncComponent(() => import('/@/layout/routerView/parent.vue'));
 const LayoutFooter = defineAsyncComponent(() => import('/@/layout/footer/index.vue'));
-const CheckToken = defineAsyncComponent(() => import('/@/components/CheckToken/index.vue'));
 
 // 定义变量内容
 const layoutMainScrollbarRef = ref();

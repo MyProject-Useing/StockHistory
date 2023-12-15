@@ -266,7 +266,6 @@ const initUserInfo = (userId: any) => {
 	getObj(userId)
 		.then((res) => {
 			formData.value = res.data;
-			initSocialList();
 		})
 		.catch((err) => {
 			useMessage().error(err.msg);
@@ -276,31 +275,6 @@ const initUserInfo = (userId: any) => {
 		});
 };
 const socialList = ref([] as any);
-
-const initSocialList = () => {
-	socialList.value = [
-		{
-			name: '微信公众号',
-			type: 'wechat',
-			openId: formData.value.wxOpenid,
-		},
-		{
-			name: 'QQ',
-			type: 'tencent',
-			openId: formData.value.qqOpenid,
-		},
-		{
-			name: 'gitee',
-			type: 'gitee',
-			openId: formData.value.giteeOpenId,
-		},
-		{
-			name: '开源中国',
-			type: 'osc',
-			openId: formData.value.oscOpenId,
-		},
-	];
-};
 
 const Unbinding = (type) => {
 	UnbindingUser(type)

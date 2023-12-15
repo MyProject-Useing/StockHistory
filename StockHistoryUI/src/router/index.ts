@@ -7,7 +7,7 @@ import { useKeepALiveNames } from '/@/stores/keepAliveNames';
 import { useRoutesList } from '/@/stores/routesList';
 import { Session } from '/@/utils/storage';
 import { staticRoutes, notFoundAndNoPower } from '/@/router/route';
-import { initBackEndControlRoutes } from '/@/router/backEnd';
+import { initFrontEndControlRoutes } from '/@/router/frontEnd';
 
 /**
  * 1、前端控制路由时：isRequestRoutes 为 false，需要写 roles，需要走 setFilterRoute 方法。
@@ -103,7 +103,7 @@ router.beforeEach(async (to, from, next) => {
 			const { routesList } = storeToRefs(storesRoutesList);
 			if (routesList.value.length === 0) {
 				// 后端控制路由：路由数据初始化，防止刷新时丢失
-				await initBackEndControlRoutes();
+				await initFrontEndControlRoutes();
 				next({ path: to.path, query: to.query });
 			} else {
 				next();

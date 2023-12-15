@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { Session } from '/@/utils/storage';
-import { getUserInfo, login, refreshTokenApi } from '/@/api/login/index';
+import { getUserInfo, login } from '/@/api/login/index';
 import { useMessage } from '/@/hooks/message';
 
 /**
@@ -40,29 +40,6 @@ export const useUserInfo = defineStore('userInfo', {
 					})
 					.catch((err) => {
 						useMessage().error(err?.msg || '系统异常请联系管理员');
-						reject(err);
-					});
-			});
-		},
-
-		/**
-		 * 刷新token方法
-		 * @function refreshToken
-		 * @async
-		 * @returns {Promise<any>}
-		 */
-		async refreshToken() {
-			return new Promise((resolve, reject) => {
-				const refreshToken = Session.get('refresh_token');
-				refreshTokenApi(refreshToken)
-					.then((res) => {
-						// 存储token 信息
-						Session.set('token', res.access_token);
-						Session.set('refresh_token', res.refresh_token);
-						resolve(res);
-					})
-					.catch((err) => {
-						useMessage().error(err.msg);
 						reject(err);
 					});
 			});
