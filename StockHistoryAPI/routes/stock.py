@@ -2,8 +2,6 @@
 import requests
 from flask import Blueprint, request, jsonify
 import tushare as ts
-import json
-import os
 import random
 
 # 设置tushare的token
@@ -11,21 +9,6 @@ ts.set_token('1b4ccd180d331659d9fc7fda145f97c94b548a123354cef61547f1ec')
 pro = ts.pro_api()
 
 stock_bp = Blueprint('stock', __name__)
-
-# 获取当前脚本所在目录
-current_dir = os.path.dirname(os.path.abspath(__file__))
-# 构建绝对路径
-file_path = os.path.join(current_dir, 'stock_data.json')
-
-# 从静态文件加载股票信息列表
-with open(file_path, 'r', encoding='utf-8') as file:
-    stock_list = json.load(file)
-
-# 定义路由来处理获取股票列表的请求
-@stock_bp.route('/stock/list', methods=['GET'])
-def get_stock_list():
-    return jsonify(stock_list)
-
 
 # 定义路由来处理获取历史数据的请求
 @stock_bp.route('/stock/history', methods=['GET'])
@@ -44,7 +27,6 @@ def stock_history():
             return jsonify({"error": str(e)}), 500
     else:
         return jsonify({"error": "股票代码、开始日期和结束日期均需要提供"}), 400
-
 
 # 调用证卷交易所-通过名称查询股票下拉
 @stock_bp.route('/stock/shortname', methods=['GET'])

@@ -9,15 +9,6 @@ export const getHistoryByCode = (params?: Object) => {
 	});
 };
 
-// 获取股票列表
-export const fetchList = (params?: Object) => {
-	return request({
-		url: '/stock/list',
-		method: 'get',
-		params,
-	});
-};
-
 // 证券所接口-通过名称获取下拉
 export const getShortname = (params?: Object) => {
 	return request({
