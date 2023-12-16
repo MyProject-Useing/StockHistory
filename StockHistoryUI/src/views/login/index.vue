@@ -1,6 +1,6 @@
 <template>
 	<div class="login-container">
-		<img :src="bg" class="backgroud-image" />
+		<!-- <img :src="bg" class="backgroud-image" /> -->
 		<Password @signInSuccess="signInSuccess" />
 	</div>
 </template>
@@ -8,7 +8,7 @@
 <script setup lang="ts" name="loginIndex">
 import { NextLoading } from '/@/utils/loading';
 // 背景图
-import bg from '/@/assets/login/bg.jpeg';
+// import bg from '/@/assets/login/bg.jpeg';
 
 import { formatAxis } from '/@/utils/formatTime';
 import { useMessage } from '/@/hooks/message';
@@ -36,6 +36,11 @@ onMounted(() => {
 </script>
 
 <style scoped lang="scss">
+.login-container {
+	height: 100%;
+	width: 100%;
+	background: linear-gradient(#141e30, #243b55);
+}
 .backgroud-image {
 	width: 100%;
 	height: 100%;

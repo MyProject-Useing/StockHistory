@@ -2,36 +2,24 @@
 	<el-form size="large" class="login-box" ref="loginFormRef" :rules="loginRules" :model="state.ruleForm" @keyup.enter="onSignIn">
 		<h2 class="login-title"><img :src="logo" /> {{ getThemeConfig.globalTitle }}</h2>
 		<el-form-item class="user-box" prop="username">
-			<el-input text placeholder="请输入用户名" v-model="state.ruleForm.username" clearable autocomplete="off">
-				<template #prefix>
-					<el-icon class="el-input__icon">
-						<ele-User />
-					</el-icon>
-				</template>
-			</el-input>
+			<el-input text placeholder="请输入用户名" v-model="state.ruleForm.username" clearable autocomplete="off"> </el-input>
 		</el-form-item>
 		<el-form-item class="user-box" prop="password">
 			<el-input :type="state.isShowPassword ? 'text' : 'password'" placeholder="请输入密码" v-model="state.ruleForm.password" autocomplete="off">
-				<template #prefix>
-					<el-icon class="el-input__icon">
-						<ele-Unlock />
-					</el-icon>
-				</template>
-				<template #suffix>
-					<i
-						class="iconfont el-input__icon login-content-password"
-						:class="state.isShowPassword ? 'icon-yincangmima' : 'icon-xianshimima'"
-						@click="state.isShowPassword = !state.isShowPassword"
-					>
-					</i>
-				</template>
 			</el-input>
 		</el-form-item>
-		<el-form-item class="login-animation4">
-			<el-button type="primary" class="login-content-submit" :loading="loading" @click="onSignIn">
+		<div class="login-animation4">
+			<a href="#">
+				<span></span>
+				<span></span>
+				<span></span>
+				<span></span>
+				登录
+			</a>
+			<!-- <el-button text class="login-content-submit" :loading="loading" @click="onSignIn">
 				<span>登 录</span>
-			</el-button>
-		</el-form-item>
+			</el-button> -->
+		</div>
 	</el-form>
 </template>
 
@@ -114,25 +102,30 @@ const onSignIn = async () => {
 	}
 	.user-box {
 		position: relative;
-		input {
-			width: 100%;
-			padding: 10px 0;
-			font-size: 16px;
-			color: #fff;
-			margin-bottom: 30px;
-			border: none;
+		:deep(.el-input__wrapper) {
+			background: none;
+			box-shadow: none;
 			border-bottom: 1px solid #fff;
-			outline: none;
-			background: transparent;
+			border-radius: 0;
+			padding: 0px;
+			input {
+				width: 100%;
+				font-size: 16px;
+				color: #fff;
+				&:focus ~ label,
+				&:valid ~ label {
+					top: -20px;
+					left: 0;
+					color: #03e9f4;
+					font-size: 12px;
+				}
+			}
 
-			&:focus ~ label,
-			&:valid ~ label {
-				top: -20px;
-				left: 0;
-				color: #03e9f4;
-				font-size: 12px;
+			input.el-input__inner:-webkit-autofill {
+				background-color: transparent !important;
 			}
 		}
+
 		label {
 			position: absolute;
 			top: 0;
@@ -145,45 +138,79 @@ const onSignIn = async () => {
 		}
 	}
 	.login-animation4 {
-		:deep(.el-form-item__content) {
-			justify-content: flex-end;
+		text-align: center;
+		margin-top: 52px;
+		a {
+			position: relative;
+			display: inline-block;
+			padding: 10px 20px;
+			color: #03e9f4;
+			font-size: 16px;
+			text-decoration: none;
+			text-transform: uppercase;
+			overflow: hidden;
+			transition: 0.5s;
+			letter-spacing: 4px;
 		}
+
+		a:hover {
+			background: #03e9f4;
+			color: #fff;
+			border-radius: 5px;
+			box-shadow: 0 0 5px #03e9f4, 0 0 25px #03e9f4, 0 0 50px #03e9f4, 0 0 100px #03e9f4;
+		}
+
+		a span {
+			position: absolute;
+			display: block;
+		}
+
+		a span:nth-child(1) {
+			top: 0;
+			left: -100%;
+			width: 100%;
+			height: 2px;
+			background: linear-gradient(90deg, transparent, #03e9f4);
+			animation: btn-anim1 1s linear infinite;
+		}
+
+		a span:nth-child(2) {
+			top: -100%;
+			right: 0;
+			width: 2px;
+			height: 100%;
+			background: linear-gradient(180deg, transparent, #03e9f4);
+			animation: btn-anim2 1s linear infinite;
+			animation-delay: 0.25s;
+		}
+
+		a span:nth-child(3) {
+			bottom: 0;
+			right: -100%;
+			width: 100%;
+			height: 2px;
+			background: linear-gradient(270deg, transparent, #03e9f4);
+			animation: btn-anim3 1s linear infinite;
+			animation-delay: 0.5s;
+		}
+
+		a span:nth-child(4) {
+			bottom: -100%;
+			left: 0;
+			width: 2px;
+			height: 100%;
+			background: linear-gradient(360deg, transparent, #03e9f4);
+			animation: btn-anim4 1s linear infinite;
+			animation-delay: 0.75s;
+		}
+
+		// :deep(.el-form-item__content) {
+		// 	justify-content: flex-end;
+		// }
+		// .login-content-submit {
+		// 	padding: 0px 29px;
+		// }
 	}
-}
-
-.login-box form a {
-	position: relative;
-	display: inline-block;
-	padding: 10px 20px;
-	color: #03e9f4;
-	font-size: 16px;
-	text-decoration: none;
-	text-transform: uppercase;
-	overflow: hidden;
-	transition: 0.5s;
-	margin-top: 40px;
-	letter-spacing: 4px;
-}
-
-.login-box a:hover {
-	background: #03e9f4;
-	color: #fff;
-	border-radius: 5px;
-	box-shadow: 0 0 5px #03e9f4, 0 0 25px #03e9f4, 0 0 50px #03e9f4, 0 0 100px #03e9f4;
-}
-
-.login-box a span {
-	position: absolute;
-	display: block;
-}
-
-.login-box a span:nth-child(1) {
-	top: 0;
-	left: -100%;
-	width: 100%;
-	height: 2px;
-	background: linear-gradient(90deg, transparent, #03e9f4);
-	animation: btn-anim1 1s linear infinite;
 }
 
 @keyframes btn-anim1 {
@@ -196,16 +223,6 @@ const onSignIn = async () => {
 	}
 }
 
-.login-box a span:nth-child(2) {
-	top: -100%;
-	right: 0;
-	width: 2px;
-	height: 100%;
-	background: linear-gradient(180deg, transparent, #03e9f4);
-	animation: btn-anim2 1s linear infinite;
-	animation-delay: 0.25s;
-}
-
 @keyframes btn-anim2 {
 	0% {
 		top: -100%;
@@ -216,16 +233,6 @@ const onSignIn = async () => {
 	}
 }
 
-.login-box a span:nth-child(3) {
-	bottom: 0;
-	right: -100%;
-	width: 100%;
-	height: 2px;
-	background: linear-gradient(270deg, transparent, #03e9f4);
-	animation: btn-anim3 1s linear infinite;
-	animation-delay: 0.5s;
-}
-
 @keyframes btn-anim3 {
 	0% {
 		right: -100%;
@@ -234,16 +241,6 @@ const onSignIn = async () => {
 	100% {
 		right: 100%;
 	}
-}
-
-.login-box a span:nth-child(4) {
-	bottom: -100%;
-	left: 0;
-	width: 2px;
-	height: 100%;
-	background: linear-gradient(360deg, transparent, #03e9f4);
-	animation: btn-anim4 1s linear infinite;
-	animation-delay: 0.75s;
 }
 
 @keyframes btn-anim4 {
