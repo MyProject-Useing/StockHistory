@@ -1,4 +1,5 @@
 # 股票信息
+import requests
 from flask import Blueprint, request, jsonify
 import tushare as ts
 import json
@@ -42,6 +43,31 @@ def stock_history():
             return jsonify({"error": str(e)}), 500
     else:
         return jsonify({"error": "股票代码、开始日期和结束日期均需要提供"}), 400
+
+
+# 调用证卷交易所-网页接口
+@stock_bp.route('/stock/data', methods=['GET'])
+def get_stock_data():
+    # 请求第三方接口
+    url = "http://www.szse.cn/api/report/ShowReport/data?SHOWTYPE=JSON&CATALOGID=1110&TABKEY=tab1&PAGENO=2&random=0.26671036372294243"
+    response = requests.get(url)
+
+    if response.status_code == 200:
+        # 解析 JSON 数据
+        data = response.json()
+
+        # 格式化需要的数据
+        formatted_data = []
+        for entry in data:
+            formatted_entry = {
+                "name": entry['metadata']['name'],
+                "data": entry['data']
+            }
+            formatted_data.append(formatted_entry)
+
+        return jsonify(formatted_data)
+    else:
+        return jsonify({"error": "请求失败"}), 500
 
 # 无权限访问
 # 定义路由来处理获取指标数据的请求

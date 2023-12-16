@@ -107,7 +107,7 @@ const getTipsFormat = (currentData: StockData) => {
 };
 
 
-export const getOptions = (rawData: any[]) => {
+export const getOptions = (rawData: any[], title = '') => {
   const formatRow = rawData.map(item => {
     return {
       ...item,
@@ -116,21 +116,27 @@ export const getOptions = (rawData: any[]) => {
   })
   const data = splitData(formatRow);
   const option = {
+    title: {
+      text: title, // 设置标题文本
+      left: 'center', // 标题居中显示
+    },
     backgroundColor: 'transparent', // 将背景色设置为透明
     animation: false,
     legend: {
+      right: '5%', // 调整右侧距离
       top: 0,
-      left: 'center',
-      data: ['日K', '5日线', '10日线', '20日线', '30日线']
+      data: ['日K', '5日线', '10日线', '20日线', '30日线'],
     },
     toolbox: {
-      feature: {
-        dataZoom: {
-          yAxisIndex: 'none'
-        },
-        restore: {},
-        saveAsImage: {}
-      }
+      // feature: {
+      //   dataZoom: {
+      //     yAxisIndex: 'none'
+      //   },
+      //   restore: {},
+      //   saveAsImage: {}
+      // },
+      right: '5%', // 调整右侧距离
+      top: 25, // 调整 toolbox 到上方
     },
     tooltip: {
       show: true,  // 设置为显示
@@ -267,8 +273,16 @@ export const getOptions = (rawData: any[]) => {
         type: 'inside',
         xAxisIndex: [0, 1],
         start: getStartNumber(data.values.length),
-        end: 100,
+        end: 100
       },
+      {
+        show: true,
+        xAxisIndex: [0, 1],
+        type: 'slider',
+        top: '85%',
+        start: 98,
+        end: 100
+      }
     ],
     series: [
       {

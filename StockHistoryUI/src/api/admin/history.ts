@@ -17,3 +17,12 @@ export const fetchList = (params?: Object) => {
 		params,
 	});
 };
+
+// 获取完整股票列表
+export const fetchData = (params?: Object) => {
+	return request({
+		url: '/stock/data',
+		method: 'get',
+		params,
+	});
+};
