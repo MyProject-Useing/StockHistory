@@ -1,6 +1,6 @@
 <template>
 	<el-form size="large" class="login-box" ref="loginFormRef" :rules="loginRules" :model="state.ruleForm" @keyup.enter="onSignIn">
-		<h2 class="login-title">{{ getThemeConfig.globalTitle }}</h2>
+		<h2 class="login-title"><img :src="logo" /> {{ getThemeConfig.globalTitle }}</h2>
 		<el-form-item class="user-box" prop="username">
 			<el-input text placeholder="请输入用户名" v-model="state.ruleForm.username" clearable autocomplete="off">
 				<template #prefix>
@@ -39,6 +39,7 @@
 import { reactive, ref, defineEmits } from 'vue';
 import { useUserInfo } from '/@/stores/userInfo';
 import { useThemeConfig } from '/@/stores/themeConfig';
+import logo from '/@/assets/logo.jpg';
 
 // 定义变量内容
 const emit = defineEmits(['signInSuccess']); // 声明事件名称
@@ -101,8 +102,15 @@ const onSignIn = async () => {
 		margin: 0 0 30px;
 		padding: 0;
 		color: #fff;
-		text-align: center;
-		font-size: 18px;
+		justify-content: center;
+		font-size: 23px;
+		display: flex;
+		align-items: center;
+		img {
+			width: 33px;
+			height: 31px;
+			margin-right: 8px;
+		}
 	}
 	.user-box {
 		position: relative;
@@ -134,6 +142,11 @@ const onSignIn = async () => {
 			color: #fff;
 			pointer-events: none;
 			transition: 0.5s;
+		}
+	}
+	.login-animation4 {
+		:deep(.el-form-item__content) {
+			justify-content: flex-end;
 		}
 	}
 }

@@ -23,7 +23,7 @@
 						<el-switch v-model="getThemeConfig.isIsDark" size="small" @change="onAddDarkChange"></el-switch>
 					</div>
 				</div>
-				<div class="layout-breadcrumb-seting-bar-flex mt15">
+				<!-- <div class="layout-breadcrumb-seting-bar-flex mt15">
 					<div class="layout-breadcrumb-seting-bar-flex-label">{{ $t('user.title0') }}</div>
 					<div class="layout-breadcrumb-seting-bar-flex-value">
 						<el-select v-model="getThemeConfig.globalComponentSize" placeholder="请选择" style="width: 90px" @change="onComponentSizeChange">
@@ -32,10 +32,10 @@
 							<el-option :label="$t('user.dropdownSmall')" value="small"></el-option>
 						</el-select>
 					</div>
-				</div>
+				</div> -->
 
 				<!-- 顶栏设置 -->
-				<el-divider content-position="left">{{ $t('layout.twoTopTitle') }}</el-divider>
+				<!-- <el-divider content-position="left">{{ $t('layout.twoTopTitle') }}</el-divider>
 				<div class="layout-breadcrumb-seting-bar-flex">
 					<div class="layout-breadcrumb-seting-bar-flex-label">{{ $t('layout.twoTopBar') }}</div>
 					<div class="layout-breadcrumb-seting-bar-flex-value">
@@ -53,7 +53,7 @@
 					<div class="layout-breadcrumb-seting-bar-flex-value">
 						<el-switch v-model="getThemeConfig.isTopBarColorGradual" size="small" @change="onTopBarGradualChange"></el-switch>
 					</div>
-				</div>
+				</div> -->
 
 				<!-- 菜单设置 -->
 				<!-- <el-divider content-position="left">{{ $t('layout.twoMenuTitle') }}</el-divider>
@@ -196,12 +196,12 @@
 
 				<!-- 界面显示 -->
 				<el-divider content-position="left">{{ $t('layout.fourTitle') }}</el-divider>
-				<div class="layout-breadcrumb-seting-bar-flex mt15">
+				<!-- <div class="layout-breadcrumb-seting-bar-flex mt15">
 					<div class="layout-breadcrumb-seting-bar-flex-label">{{ $t('layout.fourIsShowLogo') }}</div>
 					<div class="layout-breadcrumb-seting-bar-flex-value">
 						<el-switch v-model="getThemeConfig.isShowLogo" size="small" @change="onIsShowLogoChange"></el-switch>
 					</div>
-				</div>
+				</div> -->
 				<!-- <div
 					class="layout-breadcrumb-seting-bar-flex mt15"
 					:style="{ opacity: getThemeConfig.layout === 'classic' || getThemeConfig.layout === 'transverse' ? 0.5 : 1 }"
@@ -257,12 +257,12 @@
 						<el-switch v-model="getThemeConfig.isShareTagsView" size="small" @change="onShareTagsViewChange"></el-switch>
 					</div>
 				</div> -->
-				<div class="layout-breadcrumb-seting-bar-flex mt15">
+				<!-- <div class="layout-breadcrumb-seting-bar-flex mt15">
 					<div class="layout-breadcrumb-seting-bar-flex-label">{{ $t('layout.fourIsFooter') }}</div>
 					<div class="layout-breadcrumb-seting-bar-flex-value">
 						<el-switch v-model="getThemeConfig.isFooter" size="small" @change="setLocalThemeConfig"></el-switch>
 					</div>
-				</div>
+				</div> -->
 				<div class="layout-breadcrumb-seting-bar-flex mt15">
 					<div class="layout-breadcrumb-seting-bar-flex-label">{{ $t('layout.fourIsGrayscale') }}</div>
 					<div class="layout-breadcrumb-seting-bar-flex-value">
