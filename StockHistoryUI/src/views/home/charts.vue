@@ -9,6 +9,7 @@
 				<div class="value">{{ item.value }} {{ item.link }}</div>
 			</template>
 		</el-autocomplete>
+		<span class="tips">* 深圳交易所的筛选接口</span>
 		<div class="chart">
 			<!-- 在这里展示股票名称 -->
 			<div id="kline-chart"></div>
@@ -155,6 +156,11 @@ onMounted(() => {
 	.chart {
 		height: auto;
 		width: 100%;
+	}
+	.tips {
+		margin-left: 8px;
+		font-size: 12px;
+		color: #ffc107;
 	}
 }
 
