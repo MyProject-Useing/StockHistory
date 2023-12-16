@@ -24,3 +24,9 @@ npm install
 
 npm run dev
 ```
+
+### 接口
+
+默认配置
+
+VITE_ADMIN_PROXY_PATH = http://127.0.0.1:5000
