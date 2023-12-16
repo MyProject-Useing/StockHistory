@@ -125,7 +125,7 @@ export const getOptions = (rawData: any[], title = '') => {
     legend: {
       right: '5%', // 调整右侧距离
       top: 0,
-      data: ['日K', '5日线', '10日线', '20日线', '30日线'],
+      data: ['5日线', '10日线', '20日线', '30日线'],
     },
     toolbox: {
       // feature: {
@@ -362,12 +362,6 @@ export const getOptions = (rawData: any[], title = '') => {
             return params.data[1] >= 0 ? UP_COLOR : DOWN_COLOR;
           },
         },
-        // itemStyle: {
-        //   // 根据涨跌幅的正负决定颜色
-        //   color: function (params: any) {
-        //     return params.data[1] >= 0 ? UP_COLOR : DOWN_COLOR;
-        //   },
-        // },
       }
     ]
   }

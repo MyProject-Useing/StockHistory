@@ -9,16 +9,13 @@
 			</el-input>
 		</el-form-item>
 		<div class="login-animation4">
-			<a href="#">
+			<a href="#" @click="onSignIn">
 				<span></span>
 				<span></span>
 				<span></span>
 				<span></span>
 				登录
 			</a>
-			<!-- <el-button text class="login-content-submit" :loading="loading" @click="onSignIn">
-				<span>登 录</span>
-			</el-button> -->
 		</div>
 	</el-form>
 </template>
