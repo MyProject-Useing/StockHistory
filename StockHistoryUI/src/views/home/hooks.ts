@@ -1,7 +1,7 @@
 import dayjs from 'dayjs';
 
-const UP_COLOR = '#00da3c';
-const DOWN_COLOR = '#ec0000';
+const UP_COLOR = 'red';
+const DOWN_COLOR = 'green';
 
 interface StockData {
   "amount": number;// 成交量
@@ -37,7 +37,8 @@ const splitData = (rawData: StockData[]): ChartData => {
       rawData[i].low,
       rawData[i].high,
     ]);
-    volumes.push([i, Math.abs(rawData[i].vol), rawData[i].open > rawData[i].close ? 1 : -1]);
+
+    volumes.push([i, Math.abs(rawData[i].vol), rawData[i].close > rawData[i].open ? 1 : -1]);
   }
 
   return {
@@ -270,18 +271,17 @@ export const getOptions = (rawData: any[]) => {
       },
     ],
     series: [
-      // 道琼斯 -不需要
       {
         name: '日K',
         type: 'candlestick',
         data: data.values,
         yAxisIndex: 0,  // 设置y轴为第一个y轴
         itemStyle: {
-          color: UP_COLOR,   // 上涨K线颜色
-          color0: DOWN_COLOR, // 下跌K线颜色
+          color: UP_COLOR,
+          color0: DOWN_COLOR,
           borderColor: undefined,
           borderColor0: undefined,
-          borderWidth: 1.5,  // 线条粗细
+          borderWidth: 1.5,
         }
       },
       {
