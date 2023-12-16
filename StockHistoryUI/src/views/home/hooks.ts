@@ -1,7 +1,7 @@
 import dayjs from 'dayjs';
 
-const upColor = '#00da3c';
-const downColor = '#ec0000';
+const UP_COLOR = '#00da3c';
+const DOWN_COLOR = '#ec0000';
 
 interface StockData {
   "amount": number;// 成交量
@@ -23,7 +23,7 @@ interface ChartData {
   values: [number, number, number, number][]; // Modified data structure
   volumes: [number, number, number][];
 }
-
+// 拆分数据
 const splitData = (rawData: StockData[]): ChartData => {
   const categoryData: string[] = [];
   const values: [number, number, number, number][] = [];
@@ -46,7 +46,7 @@ const splitData = (rawData: StockData[]): ChartData => {
     volumes,
   };
 };
-
+// 计算移动平均线
 const calculateMA = (dayCount: number, data: ChartData): number[] => {
   const result: any[] = [];
   for (var i = 0, len = data.values.length; i < len; i++) {
@@ -82,7 +82,7 @@ const getStartNumber = (dataLength: number = 1000) => {
 
   return 60;
 }
-
+// 获取提示框内容
 const getTipsFormat = (currentData: StockData) => {
   const openColor = currentData.open > currentData.pre_close ? 'color: #ec0000;' : 'color: #00da3c;';
   const highColor = currentData.high > currentData.open ? 'color: #ec0000;' : 'color: #00da3c;';
@@ -172,11 +172,11 @@ export const getOptions = (rawData: any[]) => {
       pieces: [
         {
           value: 1,
-          color: downColor
+          color: DOWN_COLOR
         },
         {
           value: -1,
-          color: upColor
+          color: UP_COLOR
         }
       ]
     },
@@ -277,8 +277,8 @@ export const getOptions = (rawData: any[]) => {
         data: data.values,
         yAxisIndex: 0,  // 设置y轴为第一个y轴
         itemStyle: {
-          color: upColor,   // 上涨K线颜色
-          color0: downColor, // 下跌K线颜色
+          color: UP_COLOR,   // 上涨K线颜色
+          color0: DOWN_COLOR, // 下跌K线颜色
           borderColor: undefined,
           borderColor0: undefined,
           borderWidth: 1.5,  // 线条粗细
@@ -345,13 +345,13 @@ export const getOptions = (rawData: any[]) => {
         itemStyle: {
           // 根据涨跌幅的正负决定颜色
           color: function (params: any) {
-            return params.data[1] >= 0 ? upColor : downColor;
+            return params.data[1] >= 0 ? UP_COLOR : DOWN_COLOR;
           },
         },
         // itemStyle: {
         //   // 根据涨跌幅的正负决定颜色
         //   color: function (params: any) {
-        //     return params.data[1] >= 0 ? upColor : downColor;
+        //     return params.data[1] >= 0 ? UP_COLOR : DOWN_COLOR;
         //   },
         // },
       }
