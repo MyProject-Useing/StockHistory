@@ -18,7 +18,17 @@ export const fetchList = (params?: Object) => {
 	});
 };
 
-// 获取完整股票列表
+// 证券所接口-通过名称获取下拉
+export const getShortname = (params?: Object) => {
+	return request({
+		url: '/stock/shortname',
+		method: 'get',
+		params,
+	});
+};
+
+
+// 证券所接口-获取完整股票列表
 export const fetchData = (params?: Object) => {
 	return request({
 		url: '/stock/data',

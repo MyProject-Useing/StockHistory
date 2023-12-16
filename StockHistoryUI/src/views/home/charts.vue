@@ -1,6 +1,10 @@
 <template>
 	<div class="chart-container">
-		<el-autocomplete v-model="selectedStock" :fetch-suggestions="querySearchAsync" placeholder="请输入股票代码或名称" @select="handleSelect">
+		<el-select v-model="dataType" class="m-2" placeholder="Select">
+			<el-option v-for="item in typeOptions" :key="item.value" :label="item.label" :value="item.value" />
+		</el-select>
+
+		<el-autocomplete v-model="selectedStock" :fetch-suggestions="querySearchAsync" placeholder="请输入股票代码" @select="handleSelect">
 			<template #default="{ item }">
 				<div class="value">{{ item.value }} {{ item.link }}</div>
 			</template>
@@ -15,7 +19,7 @@
 <script setup lang="ts">
 import * as echarts from 'echarts';
 import dayjs from 'dayjs';
-import { getHistoryByCode, fetchData } from '/@/api/admin/history';
+import { getHistoryByCode, getShortname } from '/@/api/admin/history';
 import { getOptions } from './hooks';
 import { ElLoading } from 'element-plus';
 
@@ -29,6 +33,27 @@ const selectedStock = ref<string>('000029'); // 存储用户选择的股票
 
 // 在 data 中添加股票名称变量
 const stockName = ref<string>('深深房A'); // 初始化为空字符串
+
+const typeOptions = [
+	{
+		label: 'A股列表',
+		value: 'A', // 对应 encodeURI('[agzqdm]'),
+	},
+	{
+		label: 'B股列表',
+		value: 'B', // 对应 encodeURI('[bgzqdm]'),
+	},
+	{
+		label: 'CDR列表',
+		value: 'CDR', // 对应 encodeURI('[cdrzqdm]'),
+	},
+	{
+		label: 'A+B股列表',
+		value: 'AB', // 对应 encodeURI('[abgzqdm]'),
+	},
+];
+
+const dataType = ref(typeOptions[0].value);
 
 const getChartData = async (symbol = '000001.sz') => {
 	const loadingInstance1 = ElLoading.service({ fullscreen: true });
@@ -57,16 +82,20 @@ const createKLineChart = (data: any[]) => {
 	myChart.setOption(getOptions(data, stockName.value), true);
 };
 
-const getListByCode = async (): Promise<LinkItem[]> => {
+const getListByCode = async (queryString: string): Promise<LinkItem[]> => {
 	try {
-		const rawData = await fetchData();
-		const processedData: LinkItem[] = rawData.reduce((acc: LinkItem[], group: any) => {
-			const groupData = group.data.map((item: any) => ({
-				value: item.agdm,
-				link: item.agjc.replace(/<[^>]*>/g, ''), // 去除HTML标签
-			}));
-			return [...acc, ...groupData];
-		}, []);
+		const rawData = await getShortname({
+			dataType: dataType.value,
+			input: queryString,
+		});
+
+		const processedData: LinkItem[] = rawData.map((item: any) => {
+			return {
+				value: item.code,
+				link: item.name,
+			};
+		});
+
 		return processedData;
 	} catch (error) {
 		console.error('Error fetching data:', error);
@@ -76,17 +105,11 @@ const getListByCode = async (): Promise<LinkItem[]> => {
 
 const querySearchAsync = async (queryString: string, cb: (arg: any) => void) => {
 	try {
-		const results = queryString ? (await getListByCode()).filter(createFilter(queryString)) : [];
+		const results = queryString ? await getListByCode(queryString) : [];
 		cb(results);
 	} catch (error) {
 		console.error('Error querying data:', error);
 	}
-};
-
-const createFilter = (queryString: string) => {
-	return (item: LinkItem) => {
-		return item.value.toLowerCase().indexOf(queryString.toLowerCase()) !== -1;
-	};
 };
 
 const handleSelect = (item: LinkItem) => {

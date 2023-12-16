@@ -4,6 +4,7 @@ from flask import Blueprint, request, jsonify
 import tushare as ts
 import json
 import os
+import random
 
 # 设置tushare的token
 ts.set_token('1b4ccd180d331659d9fc7fda145f97c94b548a123354cef61547f1ec')
@@ -45,7 +46,42 @@ def stock_history():
         return jsonify({"error": "股票代码、开始日期和结束日期均需要提供"}), 400
 
 
-# 调用证卷交易所-网页接口
+# 调用证卷交易所-通过名称查询股票下拉
+@stock_bp.route('/stock/shortname', methods=['GET'])
+def stock_shortname():
+    dataTypeMap = {
+        'A': '[agzqdm]',
+        'B': '[bgzqdm]',
+        'CDR': '[cdrzqdm]',
+        'AB': '[abgzqdm]',
+    }
+
+    base_url = "http://www.szse.cn/api/report/shortname/gethangqing"
+
+    # 获取查询参数中的股票类型和代码
+    dataType = request.args.get('dataType')
+    input_value = request.args.get('input')
+
+    # 映射 dataType
+    if dataType in dataTypeMap:
+        mapped_dataType = dataTypeMap[dataType]
+    else:
+        return jsonify({"error": "Invalid dataType"}), 400
+
+    params = {
+        "dataType": mapped_dataType,
+        "input": input_value,
+        "random": str(random.random())  # 生成一个随机值
+    }
+
+    response = requests.get(base_url, params=params)
+
+    if response.status_code == 200:
+        return jsonify(response.json()["data"])
+    else:
+        return jsonify({"error": "Failed to fetch data"}), 500
+
+# 调用证卷交易所-通过代码查询股票详情
 @stock_bp.route('/stock/data', methods=['GET'])
 def get_stock_data():
     # 请求第三方接口
