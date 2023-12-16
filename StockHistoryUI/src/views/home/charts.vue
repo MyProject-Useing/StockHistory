@@ -81,3 +81,14 @@ onMounted(() => {
 	width: 100%;
 }
 </style>
+
+<style lang="scss">
+.tooltips-content {
+	display: flex;
+	align-items: center;
+	justify-content: flex-start;
+	.tips-item {
+		margin-right: 8px;
+	}
+}
+</style>

@@ -63,7 +63,6 @@ const calculateMA = (dayCount: number, data: ChartData): number[] => {
   return result;
 };
 
-
 const getStartNumber = (dataLength: number = 1000) => {
   if (dataLength > 5000) {
     return 98;
@@ -84,6 +83,29 @@ const getStartNumber = (dataLength: number = 1000) => {
   return 60;
 }
 
+const getTipsFormat = (currentData: StockData) => {
+  const openColor = currentData.open > currentData.pre_close ? 'color: #ec0000;' : 'color: #00da3c;';
+  const highColor = currentData.high > currentData.open ? 'color: #ec0000;' : 'color: #00da3c;';
+  const lowColor = currentData.low > currentData.open ? 'color: #ec0000;' : 'color: #00da3c;';
+  const closeColor = currentData.close > currentData.open ? 'color: #ec0000;' : 'color: #00da3c;';
+
+  const riseFallAmount = currentData.close - currentData.pre_close;
+  const riseFallPercentage = ((riseFallAmount / currentData.pre_close) * 100).toFixed(2);
+
+  const tooltipContent = `<div class='tooltips-content'>
+    <div class='tips-item'>${dayjs(currentData.trade_date).format('YYYYMMDD')}</div>
+    <div class='tips-item'><span>开: </span><span style="${openColor}">${currentData.open}</span></div>
+    <div class='tips-item'><span>高: </span><span style="${highColor}">${currentData.high}</span></div>
+    <div class='tips-item'><span>低: </span><span style="${lowColor}">${currentData.low}</span></div>
+    <div class='tips-item'><span>收: </span><span style="${closeColor}">${currentData.close}</span></div>
+    <div class='tips-item'><span>涨跌: </span><span style="${riseFallAmount >= 0 ? 'color: #ec0000;' : 'color: #00da3c;'}">${riseFallAmount.toFixed(2)}</span></div>
+    <div class='tips-item'><span>涨幅: </span><span style="${riseFallAmount >= 0 ? 'color: #ec0000;' : 'color: #00da3c;'}">${riseFallPercentage}%</span></div>
+  </div>`;
+
+  return tooltipContent;
+};
+
+
 export const getOptions = (rawData: any[]) => {
   const formatRow = rawData.map(item => {
     return {
@@ -96,45 +118,32 @@ export const getOptions = (rawData: any[]) => {
     backgroundColor: 'transparent', // 将背景色设置为透明
     animation: false,
     legend: {
-      top: 10,
+      top: 0,
       left: 'center',
       data: ['日K', '5日线', '10日线', '20日线', '30日线']
     },
     toolbox: {
-      show: false, // 将这里设置为 false
+      feature: {
+        dataZoom: {
+          yAxisIndex: 'none'
+        },
+        restore: {},
+        saveAsImage: {}
+      }
     },
     tooltip: {
+      show: true,  // 设置为显示
       trigger: 'axis',
+      borderWidth: 0,
+      padding: 4,
       axisPointer: {
         type: 'cross',
       },
-      borderWidth: 1,
-      borderColor: '#909399', // 修改边框颜色
-      padding: 10,
-      textStyle: {
-        color: '#fff', // 修改文本颜色
-      },
-      backgroundColor: 'rgba(50, 50, 50, 0.6)', // 修改背景颜色
-      position: function (pos, params, el, elRect, size) {
-        const obj = {
-          top: 10,
-        };
-        obj[['left', 'right'][+(pos[0] < size.viewSize[0] / 2)]] = 30;
-        return obj;
-      },
+      position: ['5%', 28],  // 固定在左上角
       formatter: function (params: any) {
         const dataIndex = params[0].dataIndex;
         const currentData = formatRow[dataIndex];
-
-        const tooltipContent = `
-          <div style="font-size: 14px;">${currentData.trade_date}</div>
-          <div style="margin-top: 8px;">开盘价: ${currentData.open}</div>
-          <div>收盘价: ${currentData.close}</div>
-          <div>最低价: ${currentData.low}</div>
-          <div>最高价: ${currentData.high}</div>
-          <div style="margin-top: 8px;">成交量: ${currentData.vol}</div>
-        `;
-        return tooltipContent;
+        return getTipsFormat(currentData);
       },
     },
     axisPointer: {
@@ -173,15 +182,19 @@ export const getOptions = (rawData: any[]) => {
     },
     grid: [
       {
-        left: '10%',
-        right: '8%',
-        height: '50%'
+        left: '5%',
+        right: '5%',
+        height: '50%',
+        borderColor: '#ddd',  // 调整网格线颜色
+        show: true,
       },
       {
-        left: '10%',
-        right: '8%',
+        left: '5%',
+        right: '5%',
         top: '63%',
-        height: '16%'
+        height: '16%',
+        borderColor: '#ddd',
+        show: true,
       }
     ],
     xAxis: [
@@ -194,7 +207,11 @@ export const getOptions = (rawData: any[]) => {
         min: 'dataMin',
         max: 'dataMax',
         axisLabel: {
-          interval: 'auto', // 设置 interval 为 'auto'
+          interval: 'auto',
+          textStyle: {
+            fontSize: 10,  // 调整字体大小
+            color: '#666', // 调整字体颜色
+          },
         },
         axisPointer: {
           z: 100,
@@ -260,23 +277,25 @@ export const getOptions = (rawData: any[]) => {
         data: data.values,
         yAxisIndex: 0,  // 设置y轴为第一个y轴
         itemStyle: {
-          color: upColor,
-          color0: downColor,
+          color: upColor,   // 上涨K线颜色
+          color0: downColor, // 下跌K线颜色
           borderColor: undefined,
           borderColor0: undefined,
+          borderWidth: 1.5,  // 线条粗细
         }
       },
       {
         name: '5日线',
         type: 'line',
         data: calculateMA(5, data),
-        yAxisIndex: 0,  // 设置y轴为第一个y轴
+        yAxisIndex: 0,
         smooth: true,
         lineStyle: {
-          opacity: 0.5
+          opacity: 0.8,
+          width: 1.5,  // 调整线条粗细
         },
-        symbol: 'none', // Set symbol to 'none' to hide points
-        symbolSize: 0, // Set symbolSize to 0 to hide points
+        symbol: 'none',
+        symbolSize: 0,
       },
       {
         name: '10日线',
@@ -285,7 +304,8 @@ export const getOptions = (rawData: any[]) => {
         yAxisIndex: 0,  // 设置y轴为第一个y轴
         smooth: true,
         lineStyle: {
-          opacity: 0.5
+          opacity: 0.8,
+          width: 1.5,  // 调整线条粗细
         },
         symbol: 'none', // Set symbol to 'none' to hide points
         symbolSize: 0, // Set symbolSize to 0 to hide points
@@ -297,7 +317,8 @@ export const getOptions = (rawData: any[]) => {
         yAxisIndex: 0,  // 设置y轴为第一个y轴
         smooth: true,
         lineStyle: {
-          opacity: 0.5
+          opacity: 0.8,
+          width: 1.5,  // 调整线条粗细
         },
         symbol: 'none', // Set symbol to 'none' to hide points
         symbolSize: 0, // Set symbolSize to 0 to hide points
@@ -309,7 +330,8 @@ export const getOptions = (rawData: any[]) => {
         yAxisIndex: 0,  // 设置y轴为第一个y轴
         smooth: true,
         lineStyle: {
-          opacity: 0.5
+          opacity: 0.8,
+          width: 1.5,  // 调整线条粗细
         },
         symbol: 'none', // Set symbol to 'none' to hide points
         symbolSize: 0, // Set symbolSize to 0 to hide points
@@ -320,10 +342,20 @@ export const getOptions = (rawData: any[]) => {
         xAxisIndex: 1,
         yAxisIndex: 1,
         data: data.volumes,
+        itemStyle: {
+          // 根据涨跌幅的正负决定颜色
+          color: function (params: any) {
+            return params.data[1] >= 0 ? upColor : downColor;
+          },
+        },
+        // itemStyle: {
+        //   // 根据涨跌幅的正负决定颜色
+        //   color: function (params: any) {
+        //     return params.data[1] >= 0 ? upColor : downColor;
+        //   },
+        // },
       }
     ]
   }
   return option
 }
-
-
