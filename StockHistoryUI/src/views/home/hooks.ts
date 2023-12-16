@@ -146,7 +146,7 @@ export const getOptions = (rawData: any[], title = '') => {
       axisPointer: {
         type: 'cross',
       },
-      position: ['5%', 28],  // 固定在左上角
+      position: ['1%', 28],  // 固定在左上角
       formatter: function (params: any) {
         const dataIndex = params[0].dataIndex;
         const currentData = formatRow[dataIndex];
@@ -189,14 +189,14 @@ export const getOptions = (rawData: any[], title = '') => {
     },
     grid: [
       {
-        left: '5%',
+        left: '1%',
         right: '5%',
         height: '50%',
         borderColor: '#ddd',  // 调整网格线颜色
         show: true,
       },
       {
-        left: '5%',
+        left: '1%',
         right: '5%',
         top: '63%',
         height: '16%',
