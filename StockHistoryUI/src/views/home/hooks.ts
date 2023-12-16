@@ -1,7 +1,7 @@
 import dayjs from 'dayjs';
 
-const UP_COLOR = 'red';
-const DOWN_COLOR = 'green';
+const UP_COLOR = '#c00c00';
+const DOWN_COLOR = '#008000';
 
 interface StockData {
   "amount": number;// 成交量
