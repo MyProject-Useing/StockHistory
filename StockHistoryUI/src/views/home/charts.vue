@@ -1,11 +1,11 @@
 <template>
-	<div class="container">
+	<div class="chart-container">
 		<el-autocomplete v-model="selectedStock" :fetch-suggestions="querySearchAsync" placeholder="请输入股票代码或名称" @select="handleSelect">
 			<template #default="{ item }">
 				<div class="value">{{ item.value }} {{ item.link }}</div>
 			</template>
 		</el-autocomplete>
-		<div class="chart-container">
+		<div class="chart">
 			<!-- 在这里展示股票名称 -->
 			<div id="kline-chart"></div>
 		</div>
@@ -25,10 +25,10 @@ interface LinkItem {
 }
 
 // 定义基础属性
-const selectedStock = ref<string>(); // 存储用户选择的股票
+const selectedStock = ref<string>('000029'); // 存储用户选择的股票
 
 // 在 data 中添加股票名称变量
-const stockName = ref<string>(''); // 初始化为空字符串
+const stockName = ref<string>('深深房A'); // 初始化为空字符串
 
 const getChartData = async (symbol = '000001.sz') => {
 	const loadingInstance1 = ElLoading.service({ fullscreen: true });
@@ -91,7 +91,7 @@ const createFilter = (queryString: string) => {
 
 const handleSelect = (item: LinkItem) => {
 	selectedStock.value = item.value;
-	const tsCode = convertToTsCode(item.value);
+	const tsCode = convertToTsCode(selectedStock.value);
 	stockName.value = item.link; // 获取股票名称
 	if (tsCode) {
 		getChartData(tsCode.toLowerCase()); // 小写转换
@@ -121,24 +121,15 @@ const convertToTsCode = (inputCode: string): string | null => {
 };
 
 onMounted(() => {
-	// fetchList().then((res) => {
-	// 	list.value = (res || []).map((item: any) => {
-	// 		return {
-	// 			label: item.name,
-	// 			value: item.symbol,
-	// 		};
-	// 	});
-	// 	// selectedStock.value = list.value[0]?.value as string;
-	// 	// getChartData(selectedStock.value);
-	// });
+	getChartData(convertToTsCode(selectedStock.value) as string);
 });
 </script>
 
 <style scoped lang="scss">
-.container {
+.chart-container {
 	height: 100%;
 	width: 100%;
-	.chart-container {
+	.chart {
 		height: auto;
 		width: 100%;
 	}
