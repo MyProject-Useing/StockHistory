@@ -12,17 +12,18 @@
 		<span class="tips">* 深圳交易所的筛选接口</span>
 		<div class="chart">
 			<!-- 在这里展示股票名称 -->
-			<div id="kline-chart"></div>
+			<ChatLine id="kline-chart" :options="chartOptions" height="100%"> </ChatLine>
 		</div>
 	</div>
 </template>
 
 <script setup lang="ts">
-import * as echarts from 'echarts';
 import dayjs from 'dayjs';
 import { getHistoryByCode, getShortname } from '/@/api/admin/history';
 import { getOptions } from './hooks';
 import { ElLoading } from 'element-plus';
+import ChatLine from '/@/components/Charts/Line.vue';
+import { reactive, ref } from 'vue';
 
 interface LinkItem {
 	value: string;
@@ -34,6 +35,8 @@ const selectedStock = ref<string>('000029'); // 存储用户选择的股票
 
 // 在 data 中添加股票名称变量
 const stockName = ref<string>('深深房A'); // 初始化为空字符串
+
+const chartOptions = reactive({});
 
 const typeOptions = [
 	{
@@ -76,11 +79,7 @@ const getChartData = async (symbol = '000001.sz') => {
 
 // 创建Chart
 const createKLineChart = (data: any[]) => {
-	const myChart = echarts.init(document.getElementById('kline-chart') as HTMLDivElement, null, {
-		renderer: 'canvas',
-		useDirtyRect: false,
-	});
-	myChart.setOption(getOptions(data, stockName.value), true);
+	Object.assign(chartOptions, getOptions(data, stockName.value));
 };
 
 const getListByCode = async (queryString: string): Promise<LinkItem[]> => {
@@ -154,7 +153,7 @@ onMounted(() => {
 	height: 100%;
 	width: 100%;
 	.chart {
-		height: auto;
+		height: calc(100% - 40px);
 		width: 100%;
 	}
 	.tips {
@@ -178,5 +177,9 @@ onMounted(() => {
 	.tips-item {
 		margin-right: 8px;
 	}
+}
+
+#kline-chart .echarts-tooltip {
+	box-shadow: none !important;
 }
 </style>

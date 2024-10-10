@@ -8,9 +8,6 @@ import { defineStore } from 'pinia';
 export const useThemeConfig = defineStore('themeConfig', {
 	state: (): ThemeConfigState => ({
 		themeConfig: {
-
-
-
 			// 是否开启布局配置抽屉
 			isDrawer: false,
 
@@ -96,7 +93,6 @@ export const useThemeConfig = defineStore('themeConfig', {
 			// 是否开启 TagsView 共用
 			isShareTagsView: false,
 
-
 			// 是否开启 Footer 底部版权信息
 			isFooter: true,
 			// 是否开启灰色模式
@@ -106,7 +102,7 @@ export const useThemeConfig = defineStore('themeConfig', {
 			// 是否开启水印
 			isWartermark: false,
 			// 水印文案
-			wartermarkText: '有嘉投资-张先生',
+			wartermarkText: '奥权',
 
 			/**
 			 * 其它设置
@@ -138,14 +134,14 @@ export const useThemeConfig = defineStore('themeConfig', {
 			 * 全局网站标题 / 副标题
 			 */
 			// 网站主标题（菜单导航、浏览器当前网页标题、登录form顶部右侧）
-			globalTitle: '有嘉投资-量化交易平台',
+			globalTitle: '奥权-期权',
 			// 默认初始语言，可选值"<zh-cn|en|zh-tw>"，默认 zh-cn
 			globalI18n: 'zh-cn',
 			// 默认全局组件大小，可选值"<large|'default'|small>"，默认 'default'
 			globalComponentSize: 'default',
 			// footer 页面作者
-			footerAuthor: '©2023 张先生',
-		}
+			footerAuthor: '©2024',
+		},
 	}),
 	actions: {
 		setThemeConfig(data: ThemeConfigState) {
