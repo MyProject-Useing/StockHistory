@@ -36,23 +36,6 @@ const splitData = (rawData: StockData[]) => {
 		volumes,
 	};
 };
-// 计算移动平均线
-const calculateMA = (dayCount: number, data: any): number[] => {
-	const result: any[] = [];
-	for (var i = 0, len = data.values.length; i < len; i++) {
-		if (i < dayCount) {
-			result.push('-');
-			continue;
-		}
-		var sum = 0;
-		for (var j = 0; j < dayCount; j++) {
-			sum += data.values[i - j][1];
-		}
-		result.push(+(sum / dayCount).toFixed(3));
-	}
-	return result;
-};
-
 const getStartNumber = (dataLength: number = 1000) => {
 	if (dataLength > 5000) {
 		return 98;
@@ -172,17 +155,16 @@ export const getOptions = (rawData: any[], title = '') => {
 			{
 				left: '1%',
 				right: '5%',
-				height: '60%',
-				backgroundColor: '#fff', // 白色背景
-				borderColor: '#e0e0e0', // 网格线颜色淡灰色
+				height: '70%',
+				borderColor: 'transparent', // 网格线颜色淡灰色
 				show: true,
 			},
 			{
 				left: '1%',
 				right: '5%',
-				top: '68.5%',
-				height: '16%',
-				borderColor: '#ddd',
+				top: '77%',
+				height: '20%',
+				borderColor: 'transparent',
 			},
 		],
 		xAxis: [
@@ -277,59 +259,6 @@ export const getOptions = (rawData: any[], title = '') => {
 				yAxisIndex: 1,
 				data: data.volumes,
 			},
-
-			// {
-			// 	name: '5日线',
-			// 	type: 'line',
-			// 	data: calculateMA(5, data),
-			// 	yAxisIndex: 0,
-			// 	smooth: true,
-			// 	lineStyle: {
-			// 		opacity: 0.8,
-			// 		width: 1.5, // 调整线条粗细
-			// 	},
-			// 	symbol: 'none',
-			// 	symbolSize: 0,
-			// },
-			// {
-			// 	name: '10日线',
-			// 	type: 'line',
-			// 	data: calculateMA(10, data),
-			// 	yAxisIndex: 0, // 设置y轴为第一个y轴
-			// 	smooth: true,
-			// 	lineStyle: {
-			// 		opacity: 0.8,
-			// 		width: 1.5, // 调整线条粗细
-			// 	},
-			// 	symbol: 'none', // Set symbol to 'none' to hide points
-			// 	symbolSize: 0, // Set symbolSize to 0 to hide points
-			// },
-			// {
-			// 	name: '20日线',
-			// 	type: 'line',
-			// 	data: calculateMA(20, data),
-			// 	yAxisIndex: 0, // 设置y轴为第一个y轴
-			// 	smooth: true,
-			// 	lineStyle: {
-			// 		opacity: 0.8,
-			// 		width: 1.5, // 调整线条粗细
-			// 	},
-			// 	symbol: 'none', // Set symbol to 'none' to hide points
-			// 	symbolSize: 0, // Set symbolSize to 0 to hide points
-			// },
-			// {
-			// 	name: '30日线',
-			// 	type: 'line',
-			// 	data: calculateMA(30, data),
-			// 	yAxisIndex: 0, // 设置y轴为第一个y轴
-			// 	smooth: true,
-			// 	lineStyle: {
-			// 		opacity: 0.8,
-			// 		width: 1.5, // 调整线条粗细
-			// 	},
-			// 	symbol: 'none', // Set symbol to 'none' to hide points
-			// 	symbolSize: 0, // Set symbolSize to 0 to hide points
-			// },
 		],
 	};
 	return option;

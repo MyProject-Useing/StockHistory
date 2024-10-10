@@ -94,7 +94,7 @@ export const useThemeConfig = defineStore('themeConfig', {
 			isShareTagsView: false,
 
 			// 是否开启 Footer 底部版权信息
-			isFooter: true,
+			isFooter: false,
 			// 是否开启灰色模式
 			isGrayscale: false,
 			// 是否开启色弱模式
