@@ -1,19 +1,33 @@
 <template>
 	<div class="chart-container">
-		<el-select v-model="dataType" class="m-2" placeholder="Select">
+		<el-select v-model="dataType" class="m-2" placeholder="Select" style="width: 200px">
 			<el-option v-for="item in typeOptions" :key="item.value" :label="item.label" :value="item.value" />
 		</el-select>
 
-		<el-autocomplete v-model="selectedStock" :fetch-suggestions="querySearchAsync" placeholder="请输入股票代码" @select="handleSelect">
+		<el-autocomplete
+			style="width: 200px"
+			v-model="selectedStock"
+			:fetch-suggestions="querySearchAsync"
+			placeholder="请输入股票代码"
+			@select="handleSelect"
+		>
 			<template #default="{ item }">
 				<div class="value">{{ item.value }} {{ item.link }}</div>
 			</template>
 		</el-autocomplete>
 		<span class="tips">* 深圳交易所的筛选接口</span>
-		<div class="chart">
-			<!-- 在这里展示股票名称 -->
-			<ChatLine id="kline-chart" :options="chartOptions" height="100%"> </ChatLine>
-		</div>
+
+		<el-row class="chart">
+			<el-col :span="19">
+				<el-row class="chart-header">
+					<span> {{ chartTitle }} </span>
+					<div id="tooltip"></div>
+				</el-row>
+				<!-- 在这里展示股票名称 -->
+				<ChatLine id="kline-chart" :options="chartOptions" height="100%"> </ChatLine
+			></el-col>
+			<el-col :span="5">右侧内容</el-col>
+		</el-row>
 	</div>
 </template>
 
@@ -34,7 +48,7 @@ interface LinkItem {
 const selectedStock = ref<string>('000029'); // 存储用户选择的股票
 
 // 在 data 中添加股票名称变量
-const stockName = ref<string>('深深房A'); // 初始化为空字符串
+const chartTitle = ref<string>('深深房A'); // 初始化为空字符串
 
 const chartOptions = reactive({});
 
@@ -79,7 +93,7 @@ const getChartData = async (symbol = '000001.sz') => {
 
 // 创建Chart
 const createKLineChart = (data: any[]) => {
-	Object.assign(chartOptions, getOptions(data, stockName.value));
+	Object.assign(chartOptions, getOptions(data));
 };
 
 const getListByCode = async (queryString: string): Promise<LinkItem[]> => {
@@ -115,7 +129,7 @@ const querySearchAsync = async (queryString: string, cb: (arg: any) => void) => 
 const handleSelect = (item: LinkItem) => {
 	selectedStock.value = item.value;
 	const tsCode = convertToTsCode(selectedStock.value);
-	stockName.value = item.link; // 获取股票名称
+	chartTitle.value = item.link; // 获取股票名称
 	if (tsCode) {
 		getChartData(tsCode.toLowerCase()); // 小写转换
 	}
@@ -179,7 +193,7 @@ onMounted(() => {
 	}
 }
 
-#kline-chart .echarts-tooltip {
+.echarts-tooltip {
 	box-shadow: none !important;
 }
 </style>

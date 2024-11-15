@@ -61,7 +61,6 @@ const getTipsFormat = (currentData: StockData) => {
 	const riseFallAmount = currentData.close - currentData.pre_close;
 	const riseFallPercentage = ((riseFallAmount / currentData.pre_close) * 100).toFixed(2);
 	const tooltipContent = `<div class="tooltips-content">
-			<div class="tips-item">${dayjs(currentData.trade_date).format('YYYYMMDD')}</div>
 			<div class="tips-item">
 				<span>开: </span>
 				<span style="color: ${getColor(currentData.open, currentData.pre_close)}">${currentData.open}</span>
@@ -91,7 +90,7 @@ const getTipsFormat = (currentData: StockData) => {
 	return tooltipContent;
 };
 
-export const getOptions = (rawData: any[], title = '') => {
+export const getOptions = (rawData: any[]) => {
 	const formatRow = rawData.map((item) => {
 		return {
 			...item,
@@ -100,10 +99,6 @@ export const getOptions = (rawData: any[], title = '') => {
 	});
 	const data = splitData(formatRow);
 	const option = {
-		title: {
-			text: title, // 设置标题文本
-			left: 'center', // 标题居中显示
-		},
 		backgroundColor: 'transparent', // 将背景色设置为透明
 		animation: false,
 		legend: {
@@ -115,9 +110,16 @@ export const getOptions = (rawData: any[], title = '') => {
 			show: true, // 设置为显示
 			trigger: 'axis',
 			padding: 4,
+			renderMode: 'html',
+			appendTo: (test: any) => {
+				return document.getElementById('tooltip');
+			},
 			className: 'echarts-tooltip',
 			axisPointer: {
 				type: 'cross',
+				label: {
+					show: false, // 关闭默认的 label 显示
+				},
 			},
 			alwaysShowContent: true,
 			position: ['1%', 28], // 固定在左上角
@@ -130,7 +132,7 @@ export const getOptions = (rawData: any[], title = '') => {
 		axisPointer: {
 			link: [{ xAxisIndex: 'all' }],
 			label: {
-				backgroundColor: '#6a7985',
+				backgroundColor: '#000',
 			},
 			triggerTooltip: true,
 		},
@@ -176,6 +178,9 @@ export const getOptions = (rawData: any[], title = '') => {
 				splitLine: { show: true },
 				axisLabel: { show: false },
 				axisTick: { show: false },
+				axisPointer: {
+					label: { show: false }, // 禁用第一个 x 轴的 axisPointer 标签
+				},
 				min: 'dataMin',
 				max: 'dataMax',
 			},
@@ -192,6 +197,9 @@ export const getOptions = (rawData: any[], title = '') => {
 						color: '#666', // 调整字体颜色
 					},
 				},
+				axisPointer: {
+					label: { show: true }, // 仅在第二个 x 轴显示 axisPointer 标签
+				},
 				min: 'dataMin',
 				max: 'dataMax',
 			},
@@ -201,25 +209,28 @@ export const getOptions = (rawData: any[], title = '') => {
 				scale: true,
 				// 调整位置为右侧
 				position: 'right',
-				axisPointer: {
-					label: {
-						backgroundColor: '#f56c6c',
-					},
-				},
 				axisLabel: {
 					// 使用formatter强制显示小数
 					formatter: function (value: any) {
 						return value.toFixed(2);
 					},
 				},
+				axisPointer: {
+					label: { show: true }, // 仅在第二个 x 轴显示 axisPointer 标签
+				},
 			},
 			{
 				scale: true,
 				gridIndex: 1,
+				position: 'right',
+				show: true,
 				splitNumber: 2,
 				axisLabel: { show: false },
 				axisTick: { show: false },
 				splitLine: { show: true },
+				axisPointer: {
+					label: { show: true }, // 仅在第二个 x 轴显示 axisPointer 标签
+				},
 			},
 		],
 		dataZoom: [
@@ -249,7 +260,7 @@ export const getOptions = (rawData: any[], title = '') => {
 					color0: DOWN_COLOR, // 下跌蜡烛的填充色
 					borderColor: UP_COLOR, // 上涨蜡烛的边框色
 					borderColor0: DOWN_COLOR, // 下跌蜡烛的边框色
-					borderColorDoji: '#000', //十字星边框色（即开盘价等于收盘价时候的边框色）
+					// borderColorDoji: '#000', //十字星边框色（即开盘价等于收盘价时候的边框色）
 				},
 			},
 			{

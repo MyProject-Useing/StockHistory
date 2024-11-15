@@ -14,8 +14,8 @@ import { useThemeConfig } from '/@/stores/themeConfig';
  */
 
 // element plus 自带国际化
-import enLocale from 'element-plus/lib/locale/lang/en';
-import zhcnLocale from 'element-plus/lib/locale/lang/zh-cn';
+import enLocale from 'element-plus/es/locale/lang/en';
+import zhcnLocale from 'element-plus/es/locale/lang/zh-cn';
 
 // 定义变量内容
 const messages = {};
@@ -37,7 +37,6 @@ for (const path in pages) {
 	if (itemize[key![2]]) itemize[key![2]].push(pages[path].default);
 	else itemize[key![2]] = pages[path];
 }
-
 
 // 合并数组对象（非标准数组对象，数组中对象的每项 key、value 都不同）
 function mergeArrObj<T>(list: T, key: string) {
